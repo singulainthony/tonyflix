@@ -406,6 +406,15 @@ plain AH2 as well. Watch for it on the box. During testing, restart Kodi instead
   local build. Commits use the GitHub no-reply address (repo-local git config).
   - **To publish an update:** raise the add-on's version, run `python3 tools/build_repo.py --clean`, commit, and push.
     Boxes update within about a day.
+  - **The site is the family install guide.** The page comes from the template `build/site/index.html`; edit the
+    template, not `docs/`.
+    - Kodi's File Manager browses the same page. It lists only links whose text is exactly the file name, so the
+      repository zip is the only entry. Checked live in Kodi 21.3: one entry, and it opens.
+    - `/kodi64` and `/kodi32` forward to the official Kodi 21.3 Android downloads (`kodi_downloads` in
+      `tools/config.json`).
+    - The guide tells family to stay on Kodi 21 and turn off store auto-updates, because Kodi 22 is at release
+      candidate stage.
+  - Zips are now reproducible (fixed timestamps), so a rebuild only changes the zips of add-ons that changed.
 
 **Next phase:** Phase 8 (testing on the real T95 box: hosting, install from zip, speed measurements).
 
