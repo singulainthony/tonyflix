@@ -4,3 +4,4 @@ __pycache__/
 # docs/ is the published Kodi repository (GitHub Pages serves it), so it IS committed.
 # Rebuild it with tools/build_repo.py before each push.
 .cache/
+.claude/

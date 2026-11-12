@@ -1,4 +1,323 @@
-<!doctype html><html><head><meta charset="utf-8"><title>TonyFlix</title></head><body>
-<a href="repository.tonyflix-1.0.0.zip">repository.tonyflix-1.0.0.zip</a><br>
-<a href="repo/zips/repository.tonyflix/repository.tonyflix-1.0.0.zip">repo/zips/repository.tonyflix/repository.tonyflix-1.0.0.zip</a>
-</body></html>
+<!doctype html>
+<!--
+  TonyFlix install guide. Template: tools/build_repo.py fills the double-brace tokens and writes docs/index.html.
+  Kodi's File Manager also reads this page as a folder: it lists only links whose text is exactly the
+  file name (the repository zip below). Every other link has descriptive text, so Kodi ignores it.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TonyFlix setup guide</title>
+<meta name="description" content="How to install TonyFlix on a Kodi 21 box, step by step.">
+<meta name="theme-color" content="#0e0e10">
+<link rel="icon" href="icon.png">
+<style>
+  :root {
+    --bg: #0e0e10;
+    --surface: #17171a;
+    --surface-2: #1f1f23;
+    --line: #2c2c31;
+    --text: #ececef;
+    --muted: #a3a3ad;
+    --accent: #f5a524;
+    --accent-ink: #1b1204;
+    --ok: #4ade80;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+  /* header */
+  header { padding: 40px 0 8px; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand img { width: 52px; height: 52px; border-radius: 12px; }
+  .wordmark { font-weight: 800; letter-spacing: .14em; font-size: 22px; color: var(--accent); }
+  h1 { font-size: clamp(30px, 6vw, 44px); line-height: 1.15; margin: 28px 0 10px; letter-spacing: -.01em; }
+  .lede { color: var(--muted); font-size: 19px; margin: 0; max-width: 40ch; }
+
+  /* cards */
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 20px 22px; margin: 24px 0;
+  }
+  .card h2 { font-size: 18px; margin: 0 0 12px; }
+  .needs { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  .needs li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+  .tick {
+    width: 22px; height: 22px; border-radius: 50%; margin-top: 3px;
+    background: var(--surface-2); border: 1px solid var(--line); color: var(--ok);
+    display: grid; place-items: center; font-size: 13px; font-weight: 700;
+  }
+  .needs b { font-weight: 650; }
+  .needs span.sub { color: var(--muted); display: block; font-size: 15px; }
+
+  /* the address */
+  .address { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .addr-row { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+  .addr {
+    flex: 1 1 260px; min-width: 0;
+    font: 600 18px/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; overflow-wrap: anywhere; user-select: all;
+  }
+  button.copy {
+    font: inherit; font-weight: 650; cursor: pointer;
+    background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 0 18px;
+    min-height: 48px;
+  }
+  .small { font-size: 15px; color: var(--muted); margin: 10px 0 0; }
+
+  /* steps */
+  h2.section { font-size: 24px; margin: 48px 0 6px; }
+  .section-note { color: var(--muted); margin: 0 0 18px; }
+  ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: step; }
+  ol.steps > li {
+    counter-increment: step; position: relative;
+    padding: 0 0 30px 58px;
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 0;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--accent); color: var(--accent-ink);
+    display: grid; place-items: center; font-weight: 800; font-size: 18px;
+  }
+  ol.steps > li::after {
+    content: ""; position: absolute; left: 19px; top: 48px; bottom: 8px; width: 2px; background: var(--line);
+  }
+  ol.steps > li:last-child::after { display: none; }
+  ol.steps h3 { font-size: 20px; margin: 6px 0 8px; line-height: 1.3; }
+  ol.steps p { margin: 8px 0; }
+  .path { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 10px 0; }
+  .path span {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 3px 10px; font-weight: 600; font-size: 16px;
+  }
+  .path i { color: var(--muted); font-style: normal; }
+  kbd {
+    font: 600 15px ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px;
+    overflow-wrap: anywhere; -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  .tip {
+    border-left: 3px solid var(--accent); background: var(--surface);
+    padding: 10px 14px; border-radius: 0 10px 10px 0; color: var(--muted); font-size: 15.5px; margin: 12px 0;
+  }
+  .tip b { color: var(--text); }
+  ul.plain { margin: 8px 0; padding-left: 20px; }
+  ul.plain li { margin: 4px 0; }
+
+  /* faq */
+  details {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    margin: 10px 0; padding: 0 18px;
+  }
+  summary {
+    cursor: pointer; font-weight: 650; padding: 14px 0; list-style: none;
+    display: flex; justify-content: space-between; gap: 12px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--accent); font-size: 22px; line-height: 1; }
+  details[open] summary::after { content: "–"; }
+  details > div { padding: 0 0 16px; color: var(--text); }
+  details > div p { margin: 6px 0; }
+
+  @media (max-width: 480px) {
+    ol.steps > li { padding-left: 46px; }
+    ol.steps > li::before { width: 32px; height: 32px; font-size: 16px; }
+    ol.steps > li::after { left: 15px; top: 40px; }
+    .card { padding: 18px 16px; }
+  }
+  footer {
+    border-top: 1px solid var(--line); margin-top: 56px; padding: 22px 0 48px;
+    color: var(--muted); font-size: 14px;
+  }
+  footer p { margin: 6px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">
+    <img src="icon.png" alt="">
+    <span class="wordmark">TONYFLIX</span>
+  </div>
+  <h1>Set up TonyFlix on your TV box</h1>
+  <p class="lede">Movies and TV shows on Kodi, with a home screen that's quick even on cheap boxes. Setup takes about 10&nbsp;minutes.</p>
+</header>
+
+<section class="card" aria-labelledby="need">
+  <h2 id="need">Before you start</h2>
+  <ul class="needs">
+    <li><span class="tick" aria-hidden="true">✓</span>
+      <div><b>Kodi version 21 on the box</b>
+        <span class="sub">To check: Kodi → Settings (gear icon) → System information. It must say 21.x. Not 22. Need it? See <a href="#kodi">Getting Kodi 21</a>.</span></div></li>
+    <li><span class="tick" aria-hidden="true">✓</span>
+      <div><b>A Real-Debrid account</b>
+        <span class="sub">Paid. This is what plays the movies and shows. Sign up at real-debrid.com.</span></div></li>
+    <li><span class="tick" aria-hidden="true">✓</span>
+      <div><b>A Trakt account</b>
+        <span class="sub">Free. Keeps track of what you've watched, for "Continue Watching". Sign up at trakt.tv.</span></div></li>
+    <li><span class="tick" aria-hidden="true">✓</span>
+      <div><b>Your phone</b>
+        <span class="sub">You'll type a short code on it to sign in. You never type a password on the TV.</span></div></li>
+  </ul>
+</section>
+
+<section class="card address" aria-labelledby="addr">
+  <h2 id="addr">The address you'll type into Kodi</h2>
+  <div class="addr-row">
+    <div class="addr" id="addr-text">https://singulainthony.github.io/tonyflix/</div>
+    <button class="copy" type="button" data-copy="addr-text">Copy</button>
+  </div>
+  <p class="small">In Kodi, it will show one file: <a href="repository.tonyflix-1.0.0.zip">repository.tonyflix-1.0.0.zip</a></p>
+</section>
+
+<h2 class="section">Install</h2>
+<p class="section-note">Use the TV remote. "Select" means the OK or center button.</p>
+
+<ol class="steps">
+  <li>
+    <h3>Allow add-ons from outside Kodi</h3>
+    <div class="path"><span>Settings ⚙</span><i>›</i><span>System</span><i>›</i><span>Add-ons</span></div>
+    <p>Turn on <b>Unknown sources</b>. A warning appears. Choose <b>Yes</b>.</p>
+    <div class="tip"><b>Don't see Add-ons?</b> At the bottom-left of the System screen, change the level from <i>Basic</i> to <i>Standard</i>.</div>
+  </li>
+
+  <li>
+    <h3>Add the TonyFlix address</h3>
+    <div class="path"><span>Settings ⚙</span><i>›</i><span>File manager</span><i>›</i><span>Add source</span></div>
+    <p>Select <kbd>&lt;None&gt;</kbd> and type the address from above, exactly:</p>
+    <p><kbd>https://singulainthony.github.io/tonyflix/</kbd></p>
+    <p>Choose <b>OK</b>. In the name box below it, type <kbd>tonyflix</kbd>, then choose <b>OK</b>.</p>
+  </li>
+
+  <li>
+    <h3>Install the TonyFlix repository</h3>
+    <div class="path"><span>Settings ⚙</span><i>›</i><span>Add-ons</span><i>›</i><span>Install from zip file</span></div>
+    <p>Select <b>tonyflix</b>, then <b>repository.tonyflix-1.0.0.zip</b>.</p>
+    <p>Wait for <b>"TonyFlix Repository installed"</b> in the top-right corner.</p>
+  </li>
+
+  <li>
+    <h3>Install the TonyFlix Wizard</h3>
+    <p>Still in the Add-ons screen:</p>
+    <div class="path"><span>Install from repository</span><i>›</i><span>TonyFlix Repository</span><i>›</i><span>Program add-ons</span><i>›</i><span>TonyFlix Wizard</span><i>›</i><span>Install</span></div>
+  </li>
+
+  <li>
+    <h3>Run the setup</h3>
+    <p>Within about 15 seconds, Kodi asks <b>"Set up TonyFlix on this box?"</b> Choose <b>Set up</b>.</p>
+    <p>Next it suggests a speed setting, already marked <b>(recommended)</b>. Just select it.</p>
+    <p>Setup takes 2–3 minutes. Don't press anything until it asks you about signing in.</p>
+    <div class="tip"><b>The screen flashes or changes look a couple of times.</b> That's normal: it's switching to the TonyFlix look.</div>
+    <div class="tip"><b>Didn't get the question?</b> Open it yourself: Add-ons › Program add-ons › TonyFlix Wizard.</div>
+  </li>
+
+  <li>
+    <h3>Sign in to Trakt and Real-Debrid</h3>
+    <p>The wizard asks about each account. Choose <b>Sign in</b>. A code and a website appear on the TV. On your phone:</p>
+    <ul class="plain">
+      <li>Trakt: go to <b>trakt.tv/activate</b> and enter the code.</li>
+      <li>Real-Debrid: go to <b>real-debrid.com/device</b> and enter the code.</li>
+    </ul>
+    <p>The TV moves on by itself once you've entered the code. Real-Debrid is asked about twice, once for each player. Sign in to both so the backup player works too.</p>
+    <div class="tip"><b>No time now?</b> Choose <b>Later</b>. You can sign in any time: Add-ons › Program add-ons › TonyFlix Wizard › <i>Sign in to accounts</i>.</div>
+  </li>
+
+  <li>
+    <h3>Open Kodi again</h3>
+    <p>When it says <b>"All done!"</b>, choose <b>OK</b> and Kodi closes. Open Kodi again and TonyFlix starts. Enjoy!</p>
+  </li>
+</ol>
+
+<h2 class="section">Good to know</h2>
+<p class="section-note">Everything below is in <b>Add-ons › Program add-ons › TonyFlix Wizard</b>.</p>
+<ul class="plain">
+  <li><b>Updates are automatic.</b> Kodi checks for new versions every day.</li>
+  <li><b>Box feels slow?</b> Choose <i>Change performance profile</i>, then <b>Lite</b>.</li>
+  <li><b>Something stopped working?</b> Choose <i>Repair TonyFlix settings</i>. You stay signed in.</li>
+  <li><b>Running low on space?</b> Choose <i>Clean up now</i>. It also runs by itself once a week.</li>
+  <li><b>Want a different way to play something?</b> On a movie or show, choose <b>Play with…</b> to use the backup player.</li>
+</ul>
+
+<h2 class="section">Problems?</h2>
+
+<details>
+  <summary>"Couldn't connect" or no files when adding the address</summary>
+  <div>
+    <p>Check the box is online, and that the address is typed exactly as shown, starting with <kbd>https://</kbd> and ending with <kbd>/</kbd>.</p>
+    <p>To fix a typo: Settings › File manager, highlight <b>tonyflix</b>, press and hold Select (or the menu button), and choose <b>Edit source</b>.</p>
+  </div>
+</details>
+
+<details>
+  <summary>"Dependencies not met" or "incompatible" when installing</summary>
+  <div><p>The box isn't running Kodi 21. Check the version under Settings › System information, then see <a href="#kodi">Getting Kodi 21</a>.</p></div>
+</details>
+
+<details>
+  <summary>"Setup finished with problems"</summary>
+  <div><p>Usually a brief internet hiccup. Open the TonyFlix Wizard and choose <b>Run full setup again</b>. Anything already installed is skipped, so it's quick.</p></div>
+</details>
+
+<details>
+  <summary>Nothing plays, or "no sources found"</summary>
+  <div><p>Real-Debrid is usually the cause. Check your subscription hasn't run out at real-debrid.com, then open the TonyFlix Wizard → <i>Sign in to accounts</i>.</p></div>
+</details>
+
+<details>
+  <summary>Continue Watching is empty</summary>
+  <div><p>That row comes from Trakt. Open the TonyFlix Wizard → <i>Sign in to accounts</i> and sign in to Trakt. It fills in as you watch.</p></div>
+</details>
+
+<details id="kodi">
+  <summary>Getting Kodi 21 (installing or going back from 22)</summary>
+  <div>
+    <p>TonyFlix needs Kodi <b>21</b>. If the box has no Kodi, an older one, or Kodi 22, install Kodi 21.3:</p>
+    <ul class="plain">
+      <li>Install the free <b>Downloader</b> app from the box's app store, and allow it to install apps when asked.</li>
+      <li>In Downloader, type <kbd>https://singulainthony.github.io/tonyflix/kodi64</kbd> and install. If the box says <i>"App not installed"</i>, use <kbd>https://singulainthony.github.io/tonyflix/kodi32</kbd> instead (older boxes are 32-bit).</li>
+      <li><b>Coming from Kodi 22?</b> Uninstall it first. Android can't go back a version on top of it. This removes that Kodi's settings.</li>
+    </ul>
+    <p>Then stop the app store from updating Kodi: open Kodi's page in the store, open its ⋮ menu, and turn off <b>Enable auto update</b>. TonyFlix doesn't work on Kodi 22 yet.</p>
+    <p class="small">Those two addresses forward to the official Kodi download for your box: <a href="https://mirrors.kodi.tv/releases/android/arm64-v8a/kodi-21.3-Omega-arm64-v8a.apk">64-bit Kodi 21.3</a> · <a href="https://mirrors.kodi.tv/releases/android/arm/kodi-21.3-Omega-armeabi-v7a.apk">32-bit Kodi 21.3</a></p>
+  </div>
+</details>
+
+<footer>
+  <p>TonyFlix is a private family setup for Kodi. It doesn't host any movies or shows, or anyone else's add-ons: TMDbHelper, Umbrella, Fen Light+ and a4kSubtitles are installed from their authors' own sites.</p>
+  <p>The TonyFlix look is based on <a href="https://github.com/jurialmunkey/skin.arctic.horizon.2">Arctic Horizon 2</a> by jurialmunkey (CC BY-NC-SA 4.0). Kodi® is a trademark of the XBMC Foundation; this site isn't affiliated with Kodi.</p>
+</footer>
+
+</div>
+<script>
+  document.querySelectorAll("button.copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = document.getElementById(btn.dataset.copy).textContent.trim();
+      function done() { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy"; }, 1800); }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done, function () {});
+      } else {
+        var r = document.createRange(); r.selectNodeContents(document.getElementById(btn.dataset.copy));
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        try { document.execCommand("copy"); done(); } catch (e) {}
+      }
+    });
+  });
+</script>
+</body>
+</html>

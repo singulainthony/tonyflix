@@ -10,5 +10,9 @@
     "*.psd",
     "*.xcf",
     "Thumbs.db"
-  ]
+  ],
+  "kodi_downloads": {
+    "kodi64": "https://mirrors.kodi.tv/releases/android/arm64-v8a/kodi-21.3-Omega-arm64-v8a.apk",
+    "kodi32": "https://mirrors.kodi.tv/releases/android/arm/kodi-21.3-Omega-armeabi-v7a.apk"
+  }
 }

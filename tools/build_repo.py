@@ -5,8 +5,8 @@ For every add-on folder in addons/ this:
   * zips it to docs/<repo>/zips/<id>/<id>-<version>.zip (root folder = add-on id)
   * copies the add-on's icon/fanart next to the zip (Kodi fetches them from there)
   * appends its addon.xml to docs/<repo>/addons.xml and writes addons.xml.md5
-Then it writes docs/index.html (browsable from Kodi's File Manager as a source)
-with a link to the repository zip.
+Then it writes the family install guide to docs/index.html from build/site/index.html. Kodi's File
+Manager can also browse that page as a source, since it links the repository zip.
 
 Placeholders {BASE_URL} and {REPO_SUBDIR} in any addon.xml are replaced in the
 zipped copy from tools/config.json, so the source tree stays URL-agnostic.
@@ -70,10 +70,12 @@ def zip_addon(folder, addon_id, version, raw_xml, out_dir, cfg):
             if path.is_dir() or excluded(rel, cfg["zip_exclude"]):
                 continue
             arc = f"{addon_id}/{rel.as_posix()}"
-            if rel.as_posix() == "addon.xml":
-                zf.writestr(arc, raw_xml)
-            else:
-                zf.write(path, arc)
+            data = raw_xml.encode("utf-8") if rel.as_posix() == "addon.xml" else path.read_bytes()
+            # Fixed timestamp and permissions: the same sources always give byte-identical zips, so
+            # rebuilding doesn't change (and re-commit) every zip in docs/.
+            info = zipfile.ZipInfo(arc, date_time=(2020, 1, 1, 0, 0, 0))
+            info.external_attr = 0o644 << 16
+            zf.writestr(info, data, compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
     # repository.tonyflix uses <hashes>sha256</hashes>: Kodi fetches <zip>.sha256 and
     # refuses the install if it is missing or doesn't match.
     digest = hashlib.sha256(zpath.read_bytes()).hexdigest()
@@ -127,6 +129,46 @@ def add_skin_requires(install_json):
     install_json.write_text(json.dumps(data, indent=2) + "\n")
 
 
+SITE_TEMPLATE = ROOT / "build" / "site" / "index.html"
+REDIRECT_PAGE = """<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="0; url={url}"><title>Kodi 21.3 download</title></head>
+<body style="font:18px system-ui,sans-serif;background:#0e0e10;color:#ececef;padding:24px">
+<p>Starting the Kodi 21.3 download...</p><p><a style="color:#f5a524" href="{url}">Tap here if it doesn't start</a></p>
+</body></html>
+"""
+
+
+def write_site(cfg, repo_zip):
+    """docs/index.html = the family install guide (build/site/index.html). Kodi's File Manager also
+    browses this page as a source: it lists links whose text is exactly the file name (the repo zip)."""
+    DOCS.mkdir(exist_ok=True)
+    (DOCS / ".nojekyll").write_text("")
+    if not repo_zip:
+        raise SystemExit("no repository add-on found - the install page needs one")
+    shutil.copy2(repo_zip, DOCS / repo_zip.name)  # top-level copy = short path in Kodi
+    shutil.copy2(ADDONS / "repository.tonyflix" / "icon.png", DOCS / "icon.png")
+    downloads = cfg.get("kodi_downloads", {})
+    for name, url in downloads.items():   # short addresses to type into the Downloader app
+        (DOCS / name).mkdir(exist_ok=True)
+        (DOCS / name / "index.html").write_text(REDIRECT_PAGE.format(url=html.escape(url, quote=True)),
+                                                 encoding="utf-8")
+    tokens = {
+        "BUILD_NAME": cfg["build_name"],
+        "BUILD_NAME_UPPER": cfg["build_name"].upper(),
+        "BASE_URL": cfg["base_url"],
+        "REPO_ZIP": repo_zip.name,
+        "KODI64_URL": downloads.get("kodi64", "https://kodi.tv/download/android/"),
+        "KODI32_URL": downloads.get("kodi32", "https://kodi.tv/download/android/"),
+    }
+    page = SITE_TEMPLATE.read_text(encoding="utf-8")
+    for key, value in tokens.items():
+        page = page.replace("{{" + key + "}}", html.escape(value, quote=True))
+    if "{{" in page:
+        raise SystemExit(f"unfilled token in {SITE_TEMPLATE}: {page[page.index('{{'):][:40]}")
+    (DOCS / "index.html").write_text(page, encoding="utf-8")
+
+
 def main():
     sync_wizard_data()
     ap = argparse.ArgumentParser()
@@ -172,20 +214,7 @@ def main():
     (repo / "addons.xml").write_text(addons_xml, encoding="utf-8")
     (repo / "addons.xml.md5").write_text(hashlib.md5(addons_xml.encode("utf-8")).hexdigest())
 
-    # Landing page: Kodi's File Manager can browse this as an HTTP source.
-    DOCS.mkdir(exist_ok=True)
-    (DOCS / ".nojekyll").write_text("")
-    links = ""
-    if repo_zip:
-        rel = repo_zip.relative_to(DOCS).as_posix()
-        name = html.escape(repo_zip.name)
-        shutil.copy2(repo_zip, DOCS / repo_zip.name)  # top-level copy = short path in Kodi
-        links = f'<a href="{name}">{name}</a><br>\n<a href="{rel}">{rel}</a>\n'
-    (DOCS / "index.html").write_text(
-        f"<!doctype html><html><head><meta charset=\"utf-8\"><title>{html.escape(cfg['build_name'])}</title>"
-        f"</head><body>\n{links}</body></html>\n",
-        encoding="utf-8",
-    )
+    write_site(cfg, repo_zip)
     shown = repo.relative_to(ROOT) if repo.is_relative_to(ROOT) else repo
     print(f"Repo written to {shown}  (base_url: {cfg['base_url']})")
 
