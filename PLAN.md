@@ -401,9 +401,11 @@ plain AH2 as well. Watch for it on the box. During testing, restart Kodi instead
         "Error getting Fullscreen".
   - **Not tested live:** actually signing in during setup (each sign-in was answered Later; the sign-in entry
     points themselves were checked in Phase 4), and the Android path (`Quit` instead of restart).
-- **Before the family can use it:** publish `docs/` on GitHub Pages and set `base_url` in `tools/config.json`, then
-  run `python3 tools/build_repo.py --clean`. Until then, `docs/repository.tonyflix-1.0.0.zip` points to the
-  placeholder URL.
+- **Hosted (2026-11-11):** GitHub Pages serves `docs/` from the public repo `singulainthony/tonyflix` (branch
+  `main`, folder `/docs`) at **https://singulainthony.github.io/tonyflix/**. All files were checked against the
+  local build. Commits use the GitHub no-reply address (repo-local git config).
+  - **To publish an update:** raise the add-on's version, run `python3 tools/build_repo.py --clean`, commit, and push.
+    Boxes update within about a day.
 
 **Next phase:** Phase 8 (testing on the real T95 box: hosting, install from zip, speed measurements).
 
