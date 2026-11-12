@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.program.tonyflix.wizard" name="TonyFlix Wizard" version="0.2.5" provider-name="TonyFlix">
+    <requires>
+        <import addon="xbmc.python" version="3.0.1" />
+    </requires>
+    <extension point="xbmc.service" library="service.py" />
+    <extension point="xbmc.python.script" library="default.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Set up and tune TonyFlix</summary>
+        <description lang="en_GB">Installs and configures the TonyFlix build: skin, players, performance profile (Lite / Standard) and account setup. Installs every third-party add-on from its author's own source.</description>
+        <platform>all</platform>
+        <license>GPL-3.0-or-later</license>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>

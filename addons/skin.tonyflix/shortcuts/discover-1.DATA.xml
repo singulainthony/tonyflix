@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TonyFlix: one hidden placeholder so skinshortcuts still builds this tab's widget
+     grouplist (it skips submenus with zero items). Its action "Fullscreen" makes the
+     template render it invisible. The real rows come from build/home_rows.json. -->
+<shortcuts>
+    <shortcut>
+        <label>TonyFlix Rows</label>
+        <label2>Common Shortcut</label2>
+        <icon />
+        <thumb />
+        <action>Fullscreen</action>
+    </shortcut>
+</shortcuts>

@@ -1,0 +1,14 @@
+{
+  "build_name": "TonyFlix",
+  "base_url": "https://singulainthony.github.io/tonyflix",
+  "repo_subdir": "repo",
+  "zip_exclude": [
+    ".git",
+    ".DS_Store",
+    "__pycache__",
+    "*.pyc",
+    "*.psd",
+    "*.xcf",
+    "Thumbs.db"
+  ]
+}

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- TonyFlix: TMDb-backed search only (no library or music search). -->
+<shortcuts>
+    <shortcut>
+        <label>$LOCALIZE[31168]</label>
+        <label2>$LOCALIZE[571]</label2>
+        <icon>special://skin/extras/icons/film.png</icon>
+        <action>DefaultSearch-TMDBMovies</action>
+    </shortcut>
+    <shortcut>
+        <label>$LOCALIZE[31169]</label>
+        <label2>$LOCALIZE[571]</label2>
+        <icon>special://skin/extras/icons/tv.png</icon>
+        <action>DefaultSearch-TMDBShows</action>
+    </shortcut>
+    <shortcut>
+        <label>$LOCALIZE[31171]</label>
+        <label2>$LOCALIZE[571]</label2>
+        <icon>special://skin/extras/icons/person.png</icon>
+        <action>DefaultSearch-TMDBPeople</action>
+    </shortcut>
+    <shortcut>
+        <label>Keywords</label>
+        <label2>$LOCALIZE[571]</label2>
+        <icon>special://skin/extras/icons/hashtag.png</icon>
+        <action>DefaultSearch-TMDBKeywords</action>
+    </shortcut>
+    <shortcut>
+        <label>$LOCALIZE[31170]</label>
+        <label2>$LOCALIZE[571]</label2>
+        <icon>special://skin/extras/icons/sets.png</icon>
+        <action>DefaultSearch-TMDBSets</action>
+    </shortcut>
+</shortcuts>

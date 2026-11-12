@@ -1,0 +1,7 @@
+# TMDbHelper bundled players to hide from the "Play with..." chooser.
+# The wizard copies each from plugin.video.themoviedb.helper/resources/players/ into
+# addon_data/plugin.video.themoviedb.helper/reconfigured_players/ with "disabled": "true"
+# (files there override the bundled ones by name).
+upnp_network.json
+youtube.json
+imdbtrailers.json

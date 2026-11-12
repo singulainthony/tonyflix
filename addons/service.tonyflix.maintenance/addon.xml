@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="service.tonyflix.maintenance" name="TonyFlix Maintenance" version="1.0.0" provider-name="TonyFlix">
+    <requires>
+        <import addon="xbmc.python" version="3.0.1" />
+    </requires>
+    <extension point="xbmc.service" library="service.py" />
+    <extension point="xbmc.python.script" library="default.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Keeps TonyFlix fast over time</summary>
+        <description lang="en_GB">Weekly, while the box is idle: removes thumbnails not shown for 30 days (via Kodi's texture database), old add-on package backups, stale temp files and old crash logs. Stops instantly if playback starts. Run it any time from Programs.</description>
+        <platform>all</platform>
+        <license>GPL-3.0-or-later</license>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>

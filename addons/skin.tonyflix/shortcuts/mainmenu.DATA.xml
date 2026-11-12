@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- TonyFlix tabs. Home/Movies/TV rows come from build/home_rows.json; Movies/TV click opens the TMDb hubs. -->
+<shortcuts>
+    <shortcut>
+        <label>Home</label>
+        <label2>Common Shortcut</label2>
+        <defaultID>home</defaultID>
+        <icon>special://skin/extras/icons/home.png</icon>
+        <action>Action(Down)</action>
+    </shortcut>
+    <shortcut>
+        <label>342</label>
+        <label2>Common Shortcut</label2>
+        <defaultID>movies</defaultID>
+        <icon>special://skin/extras/icons/film.png</icon>
+        <action>ActivateWindow(1120)</action>
+    </shortcut>
+    <shortcut>
+        <label>20343</label>
+        <label2>Common Shortcut</label2>
+        <defaultID>tvshows</defaultID>
+        <icon>special://skin/extras/icons/tv.png</icon>
+        <action>ActivateWindow(1121)</action>
+    </shortcut>
+    <shortcut>
+        <label>Discover</label>
+        <label2>Common Shortcut</label2>
+        <defaultID>discover</defaultID>
+        <icon>special://skin/extras/icons/compass.png</icon>
+        <action>Action(Down)</action>
+    </shortcut>
+</shortcuts>

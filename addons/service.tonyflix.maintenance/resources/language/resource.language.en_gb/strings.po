@@ -1,0 +1,24 @@
+# Kodi Media Center language file
+# Addon id: service.tonyflix.maintenance
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+msgctxt "#30000"
+msgid "Automatic weekly clean-up"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Run every (days)"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Remove thumbnails not shown for (days)"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Show a notification after automatic clean-up"
+msgstr ""

@@ -1,0 +1,19 @@
+{
+  "_comment": "Applied by the wizard ONE SETTING AT A TIME from a single process (parallel setSetting calls clobber each other). Values are strings as Kodi stores them.",
+  "plugin.video.themoviedb.helper": {
+    "default_player_movies": "umbrella.json play_movie",
+    "default_player_episodes": "umbrella.json play_episode",
+    "sync_provider_watched": "trakt",
+    "sync_provider_watchlist": "trakt",
+    "sync_provider_collection": "trakt",
+    "sync_provider_scrobbling": "[\"trakt\"]"
+  },
+  "plugin.video.umbrella": {
+    "_why": "TMDbHelper is the only Trakt scrobbler; Umbrella keeps watched/resume locally (these are its defaults - pinned in case they change).",
+    "scrobble.source": "0",
+    "indicators.alt": "0"
+  },
+  "plugin.video.fenlight": {
+    "_why": "Fen Light stores settings in its own database, not settings.xml. Its defaults are already right: watched_indicators=0 (local), update.username=thejason40, update.location=thejason40.github.io. Nothing to apply."
+  }
+}

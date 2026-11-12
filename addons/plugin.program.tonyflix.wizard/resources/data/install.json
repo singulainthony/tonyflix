@@ -1,0 +1,100 @@
+{
+  "_comment": [
+    "What the TonyFlix wizard installs, in order. Every third-party add-on comes from its author's own source:",
+    "repositories are fetched from the URLs below; add-ons are then installed by Kodi itself (InstallAddon) so they",
+    "keep auto-updating from their repo. TonyFlix never re-hosts anyone else's add-on."
+  ],
+  "repositories": [
+    {
+      "id": "repository.jurialmunkey",
+      "name": "jurialmunkey (TMDbHelper, skin helpers)",
+      "index": "https://jurialmunkey.github.io/repository.jurialmunkey/",
+      "zip_pattern": "repository\\.jurialmunkey-[0-9.]+\\.zip"
+    },
+    {
+      "id": "repository.umbrella",
+      "name": "Umbrella",
+      "index": "https://umbrellaplug.github.io/",
+      "zip_pattern": "repository\\.umbrella-[0-9.]+\\.zip"
+    },
+    {
+      "id": "repository.a4ksubtitles",
+      "name": "a4kSubtitles",
+      "zip": "https://a4k-openproject.github.io/a4kSubtitles/packages/a4kSubtitles-repository.zip"
+    }
+  ],
+  "zip_addons": [
+    {
+      "id": "plugin.video.fenlight",
+      "name": "Fen Light+",
+      "version_url": "https://thejason40.github.io/packages/fen_light_version",
+      "zip": "https://thejason40.github.io/packages/plugin.video.fenlight-{version}.zip",
+      "_why": "Fen Light+ has no Kodi repository; its own updater (thejason40 / thejason40.github.io) keeps it current."
+    }
+  ],
+  "addons": [
+    {
+      "id": "plugin.video.themoviedb.helper",
+      "name": "TMDbHelper"
+    },
+    {
+      "id": "script.module.tmdbhelper.sync.trakt",
+      "name": "Trakt sync for TMDbHelper"
+    },
+    {
+      "id": "plugin.video.umbrella",
+      "name": "Umbrella"
+    },
+    {
+      "id": "service.subtitles.a4ksubtitles",
+      "name": "a4kSubtitles"
+    },
+    {
+      "id": "service.tonyflix.maintenance",
+      "name": "TonyFlix Maintenance"
+    }
+  ],
+  "skin": {
+    "id": "skin.tonyflix",
+    "name": "TonyFlix skin",
+    "requires": [
+      "script.skinshortcuts",
+      "script.skinvariables",
+      "script.texturemaker",
+      "plugin.video.themoviedb.helper",
+      "script.module.tmdbhelper.sync.trakt",
+      "resource.images.studios.coloured",
+      "resource.font.robotocjksc"
+    ]
+  },
+  "accounts": [
+    {
+      "key": "trakt",
+      "name": "Trakt",
+      "why": "Continue Watching, Up Next, your lists and recommendations",
+      "action": "RunScript(script.module.tmdbhelper.sync.trakt,action=authenticate)",
+      "done_if_property": "TMDbHelper.TraktIsAuth",
+      "on_done": "Skin.SetBool(TonyFlix.TraktLinked)",
+      "requires": "script.module.tmdbhelper.sync.trakt"
+    },
+    {
+      "key": "rd_umbrella",
+      "name": "Real-Debrid in Umbrella",
+      "why": "Streams for the Play button",
+      "action": "RunPlugin(plugin://plugin.video.umbrella/?action=rd_Authorize)",
+      "done_if_setting": [
+        "plugin.video.umbrella",
+        "realdebridtoken"
+      ],
+      "requires": "plugin.video.umbrella"
+    },
+    {
+      "key": "rd_fenlight",
+      "name": "Real-Debrid in Fen Light+",
+      "why": "Streams for \"Play with...\" (backup player)",
+      "action": "RunPlugin(plugin://plugin.video.fenlight/?mode=real_debrid.authenticate)",
+      "requires": "plugin.video.fenlight",
+      "optional": true
+    }
+  ]
+}

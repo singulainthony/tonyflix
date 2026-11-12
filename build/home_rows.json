@@ -1,0 +1,434 @@
+{
+  "_comment": [
+    "TonyFlix home rows. Edit this file, then run: python3 tools/gen_home.py",
+    "tab keys must match the skinshortcuts labelID of the main-menu item (home, movies, tvshows).",
+    "path: TMDbHelper query string (after '?'); common params are appended automatically.",
+    "flags: trakt = only when Trakt is linked; lite = also shown on the Lite profile;",
+    "style: poster (default, cheapest) or landscape.",
+    "Provider IDs (TMDb, US): Netflix 8, Prime Video 9, Hulu 15, Disney+ 337, Apple TV+ 350, Max 1899.",
+    "Genre IDs need with_id=True (TMDbHelper otherwise expects genre names).",
+    "Row kinds: path (TMDbHelper list), items (static tiles/buttons, no plugin call), stack (results of the focused item in the row above).",
+    "Styles: poster, landscape, square (logos), buttons. Relative dates use t-<days> (e.g. primary_release_date.gte=t-120)."
+  ],
+  "common_params": "nextpage=false&widget=true&fanarttv=false",
+  "eager_rows": 3,
+  "lookahead": 3,
+  "limit": 20,
+  "tabs": {
+    "home": {
+      "hero": "info=trending_week&tmdb_type=movie",
+      "rows": [
+        {
+          "label": "Up Next",
+          "path": "info=trakt_nextepisodes&tmdb_type=tv",
+          "trakt": true,
+          "lite": true,
+          "style": "landscape"
+        },
+        {
+          "label": "Continue Watching",
+          "path": "info=trakt_inprogress&tmdb_type=movie",
+          "trakt": true,
+          "lite": true,
+          "style": "landscape"
+        },
+        {
+          "label": "Trending Now",
+          "path": "info=trending_week&tmdb_type=movie",
+          "lite": true
+        },
+        {
+          "label": "Trending TV",
+          "path": "info=trending_week&tmdb_type=tv",
+          "lite": true
+        },
+        {
+          "label": "Top Picks for You",
+          "path": "info=trakt_recommendations&tmdb_type=movie",
+          "trakt": true,
+          "lite": true
+        },
+        {
+          "label": "Popular on Netflix",
+          "path": "info=discover&tmdb_type=tv&with_watch_providers=8&watch_region=US",
+          "lite": true
+        },
+        {
+          "label": "My List: Movies",
+          "path": "info=trakt_watchlist&tmdb_type=movie",
+          "trakt": true
+        },
+        {
+          "label": "My List: Shows",
+          "path": "info=trakt_watchlist&tmdb_type=tv",
+          "trakt": true
+        },
+        {
+          "label": "Popular on Max",
+          "path": "info=discover&tmdb_type=tv&with_watch_providers=1899&watch_region=US"
+        },
+        {
+          "label": "Popular on Disney+",
+          "path": "info=discover&tmdb_type=movie&with_watch_providers=337&watch_region=US"
+        },
+        {
+          "label": "Popular on Prime Video",
+          "path": "info=discover&tmdb_type=movie&with_watch_providers=9&watch_region=US"
+        },
+        {
+          "label": "New in Theaters",
+          "path": "info=now_playing&tmdb_type=movie"
+        }
+      ]
+    },
+    "movies": {
+      "hero": "info=popular&tmdb_type=movie",
+      "rows": [
+        {
+          "label": "Continue Watching",
+          "path": "info=trakt_inprogress&tmdb_type=movie",
+          "trakt": true,
+          "lite": true,
+          "style": "landscape"
+        },
+        {
+          "label": "Trending Movies",
+          "path": "info=trending_week&tmdb_type=movie",
+          "lite": true
+        },
+        {
+          "label": "Popular Movies",
+          "path": "info=popular&tmdb_type=movie",
+          "lite": true
+        },
+        {
+          "label": "Recommended for You",
+          "path": "info=trakt_recommendations&tmdb_type=movie",
+          "trakt": true,
+          "lite": true
+        },
+        {
+          "label": "In Theaters",
+          "path": "info=now_playing&tmdb_type=movie",
+          "lite": true
+        },
+        {
+          "label": "Action",
+          "path": "info=discover&tmdb_type=movie&with_genres=28&with_id=True",
+          "lite": true
+        },
+        {
+          "label": "Movies on Netflix",
+          "path": "info=discover&tmdb_type=movie&with_watch_providers=8&watch_region=US"
+        },
+        {
+          "label": "Movies on Prime Video",
+          "path": "info=discover&tmdb_type=movie&with_watch_providers=9&watch_region=US"
+        },
+        {
+          "label": "Movies on Disney+",
+          "path": "info=discover&tmdb_type=movie&with_watch_providers=337&watch_region=US"
+        },
+        {
+          "label": "Comedy",
+          "path": "info=discover&tmdb_type=movie&with_genres=35&with_id=True"
+        },
+        {
+          "label": "Sci-Fi",
+          "path": "info=discover&tmdb_type=movie&with_genres=878&with_id=True"
+        },
+        {
+          "label": "Horror",
+          "path": "info=discover&tmdb_type=movie&with_genres=27&with_id=True"
+        },
+        {
+          "label": "Family",
+          "path": "info=discover&tmdb_type=movie&with_genres=10751&with_id=True"
+        },
+        {
+          "label": "Documentaries",
+          "path": "info=discover&tmdb_type=movie&with_genres=99&with_id=True"
+        }
+      ]
+    },
+    "tvshows": {
+      "hero": "info=trending_week&tmdb_type=tv",
+      "rows": [
+        {
+          "label": "Up Next",
+          "path": "info=trakt_nextepisodes&tmdb_type=tv",
+          "trakt": true,
+          "lite": true,
+          "style": "landscape"
+        },
+        {
+          "label": "Continue Watching",
+          "path": "info=trakt_inprogress&tmdb_type=tv",
+          "trakt": true
+        },
+        {
+          "label": "Trending TV",
+          "path": "info=trending_week&tmdb_type=tv",
+          "lite": true
+        },
+        {
+          "label": "Popular Shows",
+          "path": "info=popular&tmdb_type=tv",
+          "lite": true
+        },
+        {
+          "label": "Recommended for You",
+          "path": "info=trakt_recommendations&tmdb_type=tv",
+          "trakt": true,
+          "lite": true
+        },
+        {
+          "label": "Airing Today",
+          "path": "info=airing_today&tmdb_type=tv",
+          "lite": true
+        },
+        {
+          "label": "Popular on Netflix",
+          "path": "info=discover&tmdb_type=tv&with_watch_providers=8&watch_region=US",
+          "lite": true
+        },
+        {
+          "label": "Popular on Max",
+          "path": "info=discover&tmdb_type=tv&with_watch_providers=1899&watch_region=US"
+        },
+        {
+          "label": "Popular on Hulu",
+          "path": "info=discover&tmdb_type=tv&with_watch_providers=15&watch_region=US"
+        },
+        {
+          "label": "Popular on Apple TV+",
+          "path": "info=discover&tmdb_type=tv&with_watch_providers=350&watch_region=US"
+        },
+        {
+          "label": "Popular on Disney+",
+          "path": "info=discover&tmdb_type=tv&with_watch_providers=337&watch_region=US"
+        },
+        {
+          "label": "Comedy",
+          "path": "info=discover&tmdb_type=tv&with_genres=35&with_id=True"
+        },
+        {
+          "label": "Drama",
+          "path": "info=discover&tmdb_type=tv&with_genres=18&with_id=True"
+        },
+        {
+          "label": "Sci-Fi & Fantasy",
+          "path": "info=discover&tmdb_type=tv&with_genres=10765&with_id=True"
+        },
+        {
+          "label": "Crime",
+          "path": "info=discover&tmdb_type=tv&with_genres=80&with_id=True"
+        },
+        {
+          "label": "Reality",
+          "path": "info=discover&tmdb_type=tv&with_genres=10764&with_id=True"
+        },
+        {
+          "label": "Animation",
+          "path": "info=discover&tmdb_type=tv&with_genres=16&with_id=True"
+        }
+      ]
+    },
+    "discover": {
+      "hero": "info=discover&tmdb_type=movie&vote_average.gte=7.5&vote_count.gte=300&vote_count.lte=3000&sort_by=popularity.desc&with_id=True",
+      "rows": [
+        {
+          "label": "Find Something",
+          "style": "buttons",
+          "lite": true,
+          "items": [
+            {
+              "label": "Filter Movies",
+              "icon": "special://skin/extras/icons/filter.png",
+              "path": "info=user_discover&tmdb_type=movie"
+            },
+            {
+              "label": "Filter Shows",
+              "icon": "special://skin/extras/icons/filter.png",
+              "path": "info=user_discover&tmdb_type=tv"
+            },
+            {
+              "label": "Keywords",
+              "icon": "special://skin/extras/icons/hashtag.png",
+              "path": "info=search&tmdb_type=keyword"
+            },
+            {
+              "label": "People",
+              "icon": "special://skin/extras/icons/person.png",
+              "path": "info=search&tmdb_type=person"
+            },
+            {
+              "label": "Saved",
+              "icon": "special://skin/extras/icons/bookmark.png",
+              "path": "info=dir_custom_node&filename=TMDb%20Discover.json&basedir=special://profile/addon_data/plugin.video.themoviedb.helper/nodes/"
+            }
+          ]
+        },
+        {
+          "label": "Your Saved Searches",
+          "style": "buttons",
+          "lite": true,
+          "path": "info=dir_custom_node&filename=TMDb%20Discover.json&basedir=special://profile/addon_data/plugin.video.themoviedb.helper/nodes/"
+        },
+        {
+          "stack": true,
+          "lite": true
+        },
+        {
+          "label": "Shows by Service",
+          "style": "square",
+          "lite": true,
+          "items": [
+            {
+              "label": "Netflix",
+              "icon": "https://image.tmdb.org/t/p/w154/rK1KljqmbvO9HQa1PBFLILWah72.png",
+              "path": "info=discover&tmdb_type=tv&with_watch_providers=8&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Max",
+              "icon": "https://image.tmdb.org/t/p/w154/skypuy7SXuugIQeYg0IglmzoKaS.png",
+              "path": "info=discover&tmdb_type=tv&with_watch_providers=1899&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Disney+",
+              "icon": "https://image.tmdb.org/t/p/w154/5eZ872CghnHFLB1j8grszbrx0dx.png",
+              "path": "info=discover&tmdb_type=tv&with_watch_providers=337&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Prime Video",
+              "icon": "https://image.tmdb.org/t/p/w154/gMZdpavHmxFNnLpMHwVxfqeux2g.png",
+              "path": "info=discover&tmdb_type=tv&with_watch_providers=9&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Hulu",
+              "icon": "https://image.tmdb.org/t/p/w154/44uAnmSqvA4yBOdbPWN8YgQHjWm.png",
+              "path": "info=discover&tmdb_type=tv&with_watch_providers=15&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Apple TV+",
+              "icon": "https://image.tmdb.org/t/p/w154/9icYBfYFcwgCbky5VdGUIKJ4C5i.png",
+              "path": "info=discover&tmdb_type=tv&with_watch_providers=350&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Paramount+",
+              "icon": "https://image.tmdb.org/t/p/w154/4N4BMd0Mm0kHAmF7RZgL5lW3cwc.png",
+              "path": "info=discover&tmdb_type=tv&with_watch_providers=2303&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Peacock",
+              "icon": "https://image.tmdb.org/t/p/w154/a1UIdq5BrkcAxnxcUhFsNbXnxeu.png",
+              "path": "info=discover&tmdb_type=tv&with_watch_providers=386&watch_region=US&with_id=True"
+            }
+          ]
+        },
+        {
+          "label": "Hidden Gems",
+          "lite": true,
+          "path": "info=discover&tmdb_type=movie&vote_average.gte=7.5&vote_count.gte=300&vote_count.lte=3000&sort_by=popularity.desc&with_id=True"
+        },
+        {
+          "label": "Critically Acclaimed",
+          "lite": true,
+          "path": "info=top_rated&tmdb_type=movie"
+        },
+        {
+          "label": "Movies by Service",
+          "style": "square",
+          "items": [
+            {
+              "label": "Netflix",
+              "icon": "https://image.tmdb.org/t/p/w154/rK1KljqmbvO9HQa1PBFLILWah72.png",
+              "path": "info=discover&tmdb_type=movie&with_watch_providers=8&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Max",
+              "icon": "https://image.tmdb.org/t/p/w154/skypuy7SXuugIQeYg0IglmzoKaS.png",
+              "path": "info=discover&tmdb_type=movie&with_watch_providers=1899&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Disney+",
+              "icon": "https://image.tmdb.org/t/p/w154/5eZ872CghnHFLB1j8grszbrx0dx.png",
+              "path": "info=discover&tmdb_type=movie&with_watch_providers=337&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Prime Video",
+              "icon": "https://image.tmdb.org/t/p/w154/gMZdpavHmxFNnLpMHwVxfqeux2g.png",
+              "path": "info=discover&tmdb_type=movie&with_watch_providers=9&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Hulu",
+              "icon": "https://image.tmdb.org/t/p/w154/44uAnmSqvA4yBOdbPWN8YgQHjWm.png",
+              "path": "info=discover&tmdb_type=movie&with_watch_providers=15&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Apple TV+",
+              "icon": "https://image.tmdb.org/t/p/w154/9icYBfYFcwgCbky5VdGUIKJ4C5i.png",
+              "path": "info=discover&tmdb_type=movie&with_watch_providers=350&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Paramount+",
+              "icon": "https://image.tmdb.org/t/p/w154/4N4BMd0Mm0kHAmF7RZgL5lW3cwc.png",
+              "path": "info=discover&tmdb_type=movie&with_watch_providers=2303&watch_region=US&with_id=True"
+            },
+            {
+              "label": "Peacock",
+              "icon": "https://image.tmdb.org/t/p/w154/a1UIdq5BrkcAxnxcUhFsNbXnxeu.png",
+              "path": "info=discover&tmdb_type=movie&with_watch_providers=386&watch_region=US&with_id=True"
+            }
+          ]
+        },
+        {
+          "label": "Movie Genres",
+          "style": "buttons",
+          "path": "info=genres&tmdb_type=movie"
+        },
+        {
+          "label": "TV Genres",
+          "style": "buttons",
+          "path": "info=genres&tmdb_type=tv"
+        },
+        {
+          "label": "Coming Soon",
+          "path": "info=upcoming&tmdb_type=movie"
+        },
+        {
+          "label": "New on Streaming",
+          "path": "info=discover&tmdb_type=movie&with_watch_monetization_types=flatrate&watch_region=US&primary_release_date.gte=t-120&sort_by=popularity.desc&with_id=True"
+        },
+        {
+          "label": "Hidden Gem Series",
+          "path": "info=discover&tmdb_type=tv&vote_average.gte=8&vote_count.gte=200&vote_count.lte=2000&sort_by=popularity.desc&with_id=True"
+        },
+        {
+          "label": "Acclaimed Series",
+          "path": "info=top_rated&tmdb_type=tv"
+        },
+        {
+          "label": "Limited Series",
+          "path": "info=discover&tmdb_type=tv&with_type=2&vote_count.gte=200&sort_by=popularity.desc&with_id=True"
+        },
+        {
+          "label": "Anime",
+          "path": "info=discover&tmdb_type=tv&with_genres=16&with_original_language=ja&sort_by=popularity.desc&with_id=True"
+        },
+        {
+          "label": "Heists",
+          "path": "info=discover&tmdb_type=movie&with_keywords=heist"
+        },
+        {
+          "label": "Time Travel",
+          "path": "info=discover&tmdb_type=movie&with_keywords=time%20travel"
+        },
+        {
+          "label": "All-Time Classics",
+          "path": "info=discover&tmdb_type=movie&primary_release_date.lte=1989-12-31&vote_average.gte=7.8&vote_count.gte=1500&sort_by=popularity.desc&with_id=True"
+        }
+      ]
+    }
+  }
+}

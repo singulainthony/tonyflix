@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+<addon id="plugin.program.tonyflix.wizard" name="TonyFlix Wizard" version="0.2.5" provider-name="TonyFlix">
+    <requires>
+        <import addon="xbmc.python" version="3.0.1" />
+    </requires>
+    <extension point="xbmc.service" library="service.py" />
+    <extension point="xbmc.python.script" library="default.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Set up and tune TonyFlix</summary>
+        <description lang="en_GB">Installs and configures the TonyFlix build: skin, players, performance profile (Lite / Standard) and account setup. Installs every third-party add-on from its author's own source.</description>
+        <platform>all</platform>
+        <license>GPL-3.0-or-later</license>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+<addon id="repository.tonyflix" name="TonyFlix Repository" version="1.0.0" provider-name="TonyFlix">
+    <extension point="xbmc.addon.repository" name="TonyFlix Repository">
+        <dir>
+            <info compressed="false">https://singulainthony.github.io/tonyflix/repo/addons.xml</info>
+            <checksum>https://singulainthony.github.io/tonyflix/repo/addons.xml.md5</checksum>
+            <datadir zip="true">https://singulainthony.github.io/tonyflix/repo/zips/</datadir>
+            <hashes>sha256</hashes>
+        </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">TonyFlix build repository</summary>
+        <description lang="en_GB">Hosts the TonyFlix skin, wizard and maintenance service. Third-party add-ons are installed from their own official repositories.</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+<addon id="service.tonyflix.maintenance" name="TonyFlix Maintenance" version="1.0.0" provider-name="TonyFlix">
+    <requires>
+        <import addon="xbmc.python" version="3.0.1" />
+    </requires>
+    <extension point="xbmc.service" library="service.py" />
+    <extension point="xbmc.python.script" library="default.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Keeps TonyFlix fast over time</summary>
+        <description lang="en_GB">Weekly, while the box is idle: removes thumbnails not shown for 30 days (via Kodi's texture database), old add-on package backups, stale temp files and old crash logs. Stops instantly if playback starts. Run it any time from Programs.</description>
+        <platform>all</platform>
+        <license>GPL-3.0-or-later</license>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+<addon id="skin.tonyflix" name="TonyFlix" provider-name="TonyFlix (based on Arctic Horizon 2 by jurialmunkey)" version="1.0.0">
+    <requires>
+        <import addon="xbmc.gui" version="5.17.0" />
+        <import addon="script.skinshortcuts" version="0.4.0" />
+        <import addon="script.skinvariables" version="1.0.0" />
+        <import addon="script.texturemaker" version="0.2.8" />
+        <import addon="plugin.video.themoviedb.helper" version="6.20.5" />
+        <import addon="script.module.tmdbhelper.sync.trakt" version="1.2.9" />
+        <import addon="resource.images.studios.coloured" version="0.0.1" />
+        <import addon="resource.font.robotocjksc" version="0.0.1" />
+    </requires>
+    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="0.75" point="xbmc.gui.skin">
+        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Fast, Netflix-style movies and TV for low-power boxes.</summary>
+        <description lang="en_GB">TonyFlix is a trimmed fork of Arctic Horizon 2 by jurialmunkey, tuned for weak Android TV boxes. Movies and TV shows only.</description>
+        <disclaimer lang="en_GB">Based on Arctic Horizon 2 by jurialmunkey. Licensed CC BY-NC-SA 4.0. Not for commercial use.</disclaimer>
+        <platform>all</platform>
+        <license>CC-BY-NC-SA-4.0</license>
+        <source>https://github.com/jurialmunkey/skin.arctic.horizon.2</source>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+</addons>

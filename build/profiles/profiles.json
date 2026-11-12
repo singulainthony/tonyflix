@@ -1,0 +1,143 @@
+{
+  "_comment": [
+    "TonyFlix performance profiles. The wizard applies `common` then the chosen profile (later keys win).",
+    "Validate after editing:  python3 tools/validate_profiles.py",
+    "guisettings: Kodi 21.3 setting ids (checked against system/settings/settings.xml + android.xml + option fillers).",
+    "  Applied with JSON-RPC Settings.SetSettingValue from inside Kodi; ids missing on a platform are skipped.",
+    "advancedsettings: written to userdata/advancedsettings.xml (needs a restart). Kodi 21 moved the video cache to",
+    "  GUI settings (filecache.*), so <cache> is NOT used here.",
+    "addons: add-on settings, applied one at a time (parallel setSetting calls clobber each other).",
+    "skin: Skin.SetBool / Skin.Reset / Skin.SetString on skin.tonyflix."
+  ],
+  "detection": {
+    "_comment": "Wizard suggests Lite if ANY rule matches; the user can always pick the other profile. RAM cutoff is 2.5 GB because weak boxes are already caught by GPU/chip rules (and cheap boxes often misreport RAM).",
+    "lite_if_ram_mb_below": 2500,
+    "lite_if_cpu_cores_below": 4,
+    "lite_if_32bit_kodi": true,
+    "lite_if_gpu_matches": [
+      "Mali-400",
+      "Mali-450",
+      "Mali-T720",
+      "Mali-T760",
+      "Mali-T820",
+      "Mali-T830",
+      "Mali-G31",
+      "PowerVR GE8300",
+      "PowerVR GE8320",
+      "Adreno (TM) 3"
+    ],
+    "_gpu_note": "GPU from Kodi's System.VideoEncoderInfo ('GPU: Mali-T720'); chip from /proc/cpuinfo Hardware. T95 Max (Allwinner H6 = sun50iw6, Mali-T720) and T95 Max+ (Amlogic S905X3 = sm1, Mali-G31) both land on Lite.",
+    "lite_if_soc_matches": [
+      "sun50iw6",
+      "sun50iw9",
+      "sun50iw10",
+      "rk3318",
+      "rk3328",
+      "rk3228",
+      "rk3229",
+      "sm1",
+      "g12a",
+      "gxl"
+    ]
+  },
+  "common": {
+    "guisettings": {
+      "lookandfeel.enablerssfeeds": false,
+      "services.zeroconf": false,
+      "services.upnp": false,
+      "services.airplay": false,
+      "services.webserver": false,
+      "audiooutput.guisoundmode": 0,
+      "screensaver.mode": "screensaver.xbmc.builtin.dim",
+      "addons.unknownsources": true,
+      "videoplayer.adjustrefreshrate": 0,
+      "videoplayer.usemediacodec": true,
+      "videoplayer.usemediacodecsurface": true,
+      "myvideos.extractthumb": false,
+      "myvideos.extractflags": false,
+      "myvideos.extractchapterthumbs": false,
+      "filelists.showparentdiritems": false,
+      "debug.showloginfo": false,
+      "filecache.buffermode": 4,
+      "addons.updatemode": 1
+    },
+    "advancedsettings": {
+      "splash": "false",
+      "network": {
+        "curlclienttimeout": "30",
+        "curllowspeedtime": "30",
+        "curlretries": "2"
+      }
+    },
+    "addons": {
+      "plugin.video.themoviedb.helper": {
+        "fanarttv_lookup": "false",
+        "widgets_stale_hours": "24",
+        "trakt_watchedindicators": "true"
+      }
+    },
+    "skin": {
+      "set_bool": [],
+      "reset": [
+        "UseBackgroundVideo",
+        "Background.ExtraFanart",
+        "TMDbHelper.EnableBlur",
+        "TMDbHelper.EnableCrop"
+      ]
+    }
+  },
+  "lite": {
+    "_why": "Weak GPU / little RAM: render the GUI at 720p, small artwork, fewer rows, no constant redraws.",
+    "guisettings": {
+      "videoscreen.limitgui": 720,
+      "filecache.memorysize": 64,
+      "filecache.readfactor": 400
+    },
+    "advancedsettings": {
+      "imageres": "540",
+      "fanartres": "720"
+    },
+    "addons": {
+      "plugin.video.themoviedb.helper": {
+        "artwork_quality": "3",
+        "use_online_ratings": "false"
+      }
+    },
+    "skin": {
+      "set_bool": [
+        "TonyFlix.Lite",
+        "Textboxes.DisableAutoscroll",
+        "Info.EnableSimpleBackground"
+      ],
+      "reset": [
+        "SelectBox.Glow"
+      ]
+    }
+  },
+  "standard": {
+    "_why": "4 GB+ boxes with a decent GPU: 1080p GUI, medium artwork (w1280 backdrops instead of 4K originals), full rows.",
+    "guisettings": {
+      "videoscreen.limitgui": 1080,
+      "filecache.memorysize": 128,
+      "filecache.readfactor": 1000
+    },
+    "advancedsettings": {
+      "imageres": "720",
+      "fanartres": "1080"
+    },
+    "addons": {
+      "plugin.video.themoviedb.helper": {
+        "artwork_quality": "2",
+        "use_online_ratings": "true"
+      }
+    },
+    "skin": {
+      "set_bool": [],
+      "reset": [
+        "TonyFlix.Lite",
+        "Textboxes.DisableAutoscroll",
+        "Info.EnableSimpleBackground"
+      ]
+    }
+  }
+}
