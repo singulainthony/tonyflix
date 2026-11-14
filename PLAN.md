@@ -492,6 +492,12 @@ Play opens an empty "Choose Action" list until a player is added back.
   - Upgrade: the wizard updated itself and the three add-ons were disabled, with both player files removed.
   - Fresh setup: 72 s, no problems, and neither add-on installed.
 
+**2026-11-14 (later): TMDb account on the Accounts screen** (wizard 0.3.4). It uses TMDbHelper's own
+`authenticate_tmdb` / `revoke_tmdb`. Status is read from TMDbHelper's `tmdb_user_token` setting, checking only that
+it is non-empty. On the T95 the user found no providers to play anything, as expected after removing the players.
+They expected Real-Debrid and TMDb options under Accounts. TMDbHelper has no Real-Debrid support: Real-Debrid
+only comes back with a player add-on. Not yet tested in Kodi.
+
 **Next phase:** Phase 8 (testing on the real T95 box: hosting, install from zip, speed measurements).
 
 **Follow-up idea:** pack `media/` into `Textures.xbt` with Kodi's TexturePacker, which loads faster on Android.

@@ -249,7 +249,7 @@ def menu():
         full_setup()
         return
     options = [
-        ("Accounts", "Trakt: sign in or out"),
+        ("Accounts", "Trakt and TMDb: sign in or out"),
         ("Speed setting", f"Now: {(profiles.current_profile() or '?').title()}. Lite or Standard"),
         ("Repair TonyFlix settings", "Re-apply players and add-on settings (keeps sign-ins)"),
         ("Clean up now", "Remove old thumbnails, package backups and temp files"),

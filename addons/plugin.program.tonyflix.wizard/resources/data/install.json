@@ -77,6 +77,21 @@
       },
       "on_sign_in": "Skin.SetBool(TonyFlix.TraktLinked)",
       "on_sign_out": "Skin.Reset(TonyFlix.TraktLinked)"
+    },
+    {
+      "key": "tmdb",
+      "name": "TMDb",
+      "why": "Optional: your TMDb watchlist, favourites and ratings",
+      "requires": "plugin.video.themoviedb.helper",
+      "sign_in": "RunScript(plugin.video.themoviedb.helper,authenticate_tmdb)",
+      "_sign_in_note": "TMDbHelper asks 'use the browser?': No shows a QR code to scan with a phone.",
+      "sign_out": "RunScript(plugin.video.themoviedb.helper,revoke_tmdb)",
+      "status": {
+        "setting": [
+          "plugin.video.themoviedb.helper",
+          "tmdb_user_token"
+        ]
+      }
     }
   ],
   "retired": {
