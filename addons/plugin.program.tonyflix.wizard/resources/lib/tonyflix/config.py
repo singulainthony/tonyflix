@@ -83,8 +83,29 @@ def sync_skin_flags(report):
     report.append(f"skin: default player {'set' if has_default else 'none (Play asks)'}")
 
 
+def retire(report):
+    """Add-ons TonyFlix no longer uses (install.json 'retired'): remove their TMDbHelper player files and
+    DISABLE the add-ons. Disabling is reversible and keeps their settings and sign-ins."""
+    from tonyflix.installer import is_enabled, jsonrpc, load_install
+    retired = load_install().get("retired", {})
+    if is_installed(TMDBH):
+        players = _tmdbh_data("players")
+        for name in retired.get("players", []):
+            path = os.path.join(players, name)
+            if os.path.exists(path):
+                os.remove(path)
+                report.append(f"removed player {name}")
+    for aid in retired.get("addons", []):
+        if is_installed(aid) and is_enabled(aid):
+            jsonrpc("Addons.SetAddonEnabled", {"addonid": aid, "enabled": False})
+            report.append(f"disabled {aid}")
+    if any(r.startswith(("removed", "disabled")) for r in report):
+        log("retired: " + ", ".join(r for r in report if r.startswith(("removed", "disabled"))))
+
+
 def apply_all():
     report = []
+    retire(report)
     install_players(report)
     apply_addon_defaults(report)
     sync_skin_flags(report)

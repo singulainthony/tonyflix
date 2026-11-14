@@ -478,6 +478,20 @@ players returning "No sources found".
 - Tested on the Mac: the update installed by itself, the settings were applied after it, and Play showed
   "Choose Action" with Umbrella and Fen Light+.
 
+**2026-11-14: Umbrella and Fen Light+ removed** at the user's request (both were finding no sources). TonyFlix now
+installs TMDbHelper (with its Trakt module), a4kSubtitles and its own add-ons only. There are no player add-ons, so
+Play opens an empty "Choose Action" list until a player is added back.
+- Gone from setup: `repository.umbrella`, Umbrella, Fen Light+, both player files, and the Real-Debrid accounts.
+  The Accounts screen now shows Trakt only. The guide no longer mentions Real-Debrid.
+- **Boxes already set up** (wizard 0.3.3, defaults `_version` 3): at the next Kodi start the wizard disables Umbrella,
+  Fen Light+ and `repository.umbrella`, and deletes their TMDbHelper player files (`install.json` > `retired`).
+  - The add-ons are only disabled, so their settings and sign-ins are kept.
+  - To bring one back: enable it in Add-ons, restore its player file in `build/players`, and take it out of
+    `retired`.
+- Tested on the Mac:
+  - Upgrade: the wizard updated itself and the three add-ons were disabled, with both player files removed.
+  - Fresh setup: 72 s, no problems, and neither add-on installed.
+
 **Next phase:** Phase 8 (testing on the real T95 box: hosting, install from zip, speed measurements).
 
 **Follow-up idea:** pack `media/` into `Textures.xbt` with Kodi's TexturePacker, which loads faster on Android.

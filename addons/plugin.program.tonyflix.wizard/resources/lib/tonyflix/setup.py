@@ -213,7 +213,7 @@ def full_setup():
                             "[CR][CR]Open TonyFlix > Run full setup again to retry them.")
     signed = ui.accounts_screen(
         inst["accounts"],
-        intro="Last step: sign in so TonyFlix can play and remember what you watch. A code appears on the TV: "
+        intro="Last step: sign in to Trakt for Continue Watching, Up Next and your lists. A code appears on the TV: "
               "enter it on your phone. You can also do this later from the power menu > Accounts.",
         done_label="Finish")
     save_setup(accounts={k: "yes" if v else "no" for k, v in signed.items()})
@@ -249,7 +249,7 @@ def menu():
         full_setup()
         return
     options = [
-        ("Accounts", "Trakt and Real-Debrid: sign in or out"),
+        ("Accounts", "Trakt: sign in or out"),
         ("Speed setting", f"Now: {(profiles.current_profile() or '?').title()}. Lite or Standard"),
         ("Repair TonyFlix settings", "Re-apply players and add-on settings (keeps sign-ins)"),
         ("Clean up now", "Remove old thumbnails, package backups and temp files"),

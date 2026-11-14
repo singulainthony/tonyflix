@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.program.tonyflix.wizard" name="TonyFlix Wizard" version="0.3.2" provider-name="TonyFlix">
+<addon id="plugin.program.tonyflix.wizard" name="TonyFlix Wizard" version="0.3.3" provider-name="TonyFlix">
     <requires>
         <import addon="xbmc.python" version="3.0.1" />
     </requires>

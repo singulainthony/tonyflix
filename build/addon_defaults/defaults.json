@@ -7,16 +7,8 @@
     "sync_provider_watchlist": "trakt",
     "sync_provider_collection": "trakt",
     "sync_provider_scrobbling": "[\"trakt\"]",
-    "_players_why": "No default player (2026-11-14): Play opens TMDbHelper's player list every time, so you choose Umbrella, Fen Light+ or any other installed player."
+    "_players_why": "No default player and, since 2026-11-14, no player add-ons: Umbrella and Fen Light+ were removed (see install.json 'retired'). Play opens TMDbHelper's player list."
   },
-  "plugin.video.umbrella": {
-    "_why": "TMDbHelper is the only Trakt scrobbler; Umbrella keeps watched/resume locally (these are its defaults - pinned in case they change).",
-    "scrobble.source": "0",
-    "indicators.alt": "0"
-  },
-  "plugin.video.fenlight": {
-    "_why": "Fen Light stores settings in its own database, not settings.xml. Its defaults are already right: watched_indicators=0 (local), update.username=thejason40, update.location=thejason40.github.io. Nothing to apply."
-  },
-  "_version": 2,
+  "_version": 3,
   "_version_note": "Raise _version whenever these values change: the wizard re-applies them on boxes that are already set up (at the next Kodi start)."
 }
