@@ -468,6 +468,16 @@ manager couldn't be found.
   - A warm row costs about 0.15 s of CPU (estimated 1–2 s on a T95), and a cold one about 1.2 s.
   - Other add-ons' start-up services compete for the same lock.
 
+**2026-11-14: no default player.** At the user's request, Play opens TMDbHelper's player list every time
+(Umbrella, Fen Light+, or any other installed player that has a TMDbHelper player file). The user reported both
+players returning "No sources found".
+- The skin's "Play with..." button is hidden while there's no default player (`TonyFlix.DefaultPlayer`, kept in
+  sync by the wizard).
+- `build/addon_defaults/defaults.json` now has a `_version`. When it rises, the wizard (0.3.2+) re-applies the
+  defaults once at the next Kodi start on boxes that are already set up, with no prompt.
+- Tested on the Mac: the update installed by itself, the settings were applied after it, and Play showed
+  "Choose Action" with Umbrella and Fen Light+.
+
 **Next phase:** Phase 8 (testing on the real T95 box: hosting, install from zip, speed measurements).
 
 **Follow-up idea:** pack `media/` into `Textures.xbt` with Kodi's TexturePacker, which loads faster on Android.

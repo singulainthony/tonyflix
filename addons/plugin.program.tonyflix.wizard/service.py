@@ -8,7 +8,8 @@ import xbmc
 import xbmcaddon
 
 sys.path.insert(0, os.path.join(xbmcaddon.Addon().getAddonInfo("path"), "resources", "lib"))
-from tonyflix import setup  # noqa: E402
+from tonyflix import config, setup  # noqa: E402
+from tonyflix.installer import log  # noqa: E402
 
 
 def wait_until_idle(monitor):
@@ -29,7 +30,15 @@ def main():
         setup.build_menus(wait=False)
         return
     state = setup.load_setup()
-    if state.get("done") or state.get("declined") or xbmc.getSkinDir() == setup.SKIN_ID:
+    if state.get("done"):
+        # An update changed TonyFlix's add-on settings (e.g. the default player): apply them once, quietly.
+        wanted = config.defaults_version()
+        if state.get("defaults_version") != wanted and not monitor.waitForAbort(20) and wait_until_idle(monitor):
+            report = config.apply_all()
+            setup.save_setup(defaults_version=wanted)
+            log(f"TonyFlix settings v{wanted} applied after an update ({len(report)} items)")
+        return
+    if state.get("declined") or xbmc.getSkinDir() == setup.SKIN_ID:
         return
     if wait_until_idle(monitor):
         xbmc.executebuiltin("RunScript(plugin.program.tonyflix.wizard,setup)")

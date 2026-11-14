@@ -205,7 +205,8 @@ def full_setup():
     finally:
         screen.close()
 
-    save_setup(done=True, declined=False, when=time.strftime("%Y-%m-%d %H:%M"), profile=profile, problems=problems)
+    save_setup(done=True, declined=False, when=time.strftime("%Y-%m-%d %H:%M"), profile=profile, problems=problems,
+               defaults_version=config.defaults_version())
     if problems:
         xbmcgui.Dialog().ok(TITLE, "Setup finished, but some parts didn't install:[CR]- " +
                             "[CR]- ".join(problems[:6]) +
@@ -234,6 +235,7 @@ def finish():
 def repair():
     """Re-apply TonyFlix configuration; sign-ins and your own settings are kept."""
     report = config.apply_all()
+    save_setup(defaults_version=config.defaults_version())
     profile = profiles.current_profile() or "auto"
     profiles.apply_profile(profile)
     xbmcgui.Dialog().notification(TITLE, f"Settings re-applied ({profile} profile)", time=4000)

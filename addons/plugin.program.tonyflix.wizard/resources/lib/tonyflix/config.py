@@ -69,8 +69,23 @@ def apply_addon_defaults(report):
     log(f"add-on defaults applied ({len(report)} items)")
 
 
+def defaults_version():
+    with open(os.path.join(DATA, "defaults.json"), encoding="utf-8") as f:
+        return json.load(f).get("_version", 1)
+
+
+def sync_skin_flags(report):
+    """TonyFlix.DefaultPlayer: shows the skin's "Play with..." button only when Play has a default player."""
+    from tonyflix import profiles
+    has_default = is_installed(TMDBH) and bool(xbmcaddon.Addon(TMDBH).getSetting("default_player_movies"))
+    flag = ["TonyFlix.DefaultPlayer"]
+    profiles.apply_skin(flag if has_default else [], [] if has_default else flag, {})
+    report.append(f"skin: default player {'set' if has_default else 'none (Play asks)'}")
+
+
 def apply_all():
     report = []
     install_players(report)
     apply_addon_defaults(report)
+    sync_skin_flags(report)
     return report

@@ -188,7 +188,8 @@
                 <param name="label">$VAR[Label_VideoInfo_PlayButton]</param>
             </include>
         </include>
-        <!-- TonyFlix: "Play with..." - pick Umbrella / Fen Light+ for this title instead of the default player -->
+        <!-- TonyFlix: "Play with..." - pick Umbrella / Fen Light+ for this title instead of the default player.
+             Hidden when there is no default player (TonyFlix.DefaultPlayer, set by the wizard): Play already asks. -->
         <include content="OSD_Button" condition="!$EXP[Exp_IsPersonInfo]">
             <param name="vertical">true</param>
             <param name="id" value="5019" />
@@ -196,7 +197,7 @@
             <param name="sliceid" value="5219" />
             <param name="label" value="Play with..." />
             <param name="icon" value="special://skin/extras/icons/circle-play-regular.png" />
-            <param name="visible" value="$EXP[TF_PlayWith_Available]" />
+            <param name="visible" value="$EXP[TF_PlayWith_Available] + Skin.HasSetting(TonyFlix.DefaultPlayer)" />
             <onclick>RunScript(plugin.video.themoviedb.helper,$VAR[TF_PlayWith_Params],ignore_default=True)</onclick>
             <include content="OSD_Button_HintLabel">
                 <param name="label">Play with...</param>
