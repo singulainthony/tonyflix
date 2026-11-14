@@ -1,28 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
+<!-- TonyFlix power menu (the power icon at the top of Home).
+     Exit / Force close run through the TonyFlix Wizard on purpose: Skin Shortcuts hides a plain Quit()
+     item unless System.ShowExitButton is true, which it isn't on every box. -->
 <shortcuts>
     <shortcut>
-        <icon>special://skin/extras/icons/sun.png</icon>
-        <label>$LOCALIZE[8]</label>
+        <icon>special://skin/extras/icons/circle-user.png</icon>
+        <label>Accounts</label>
         <label2>Power Shortcut</label2>
-        <action>ActivateWindow(weather)</action>
+        <action>RunScript(plugin.program.tonyflix.wizard,accounts)</action>
     </shortcut>
     <shortcut>
-        <icon>special://skin/extras/icons/favourites2.png</icon>
-        <label>$LOCALIZE[1036]</label>
+        <icon>special://skin/extras/icons/sliders.png</icon>
+        <label>TonyFlix</label>
         <label2>Power Shortcut</label2>
-        <action>ActivateWindow(favourites)</action>
-    </shortcut>
-    <shortcut>
-        <icon>special://skin/extras/icons/filebox.png</icon>
-        <label>$LOCALIZE[7]</label>
-        <label2>Power Shortcut</label2>
-        <action>ActivateWindow(filemanager)</action>
-    </shortcut>
-    <shortcut>
-        <icon>special://skin/extras/icons/addon.png</icon>
-        <label>$LOCALIZE[24001]</label>
-        <label2>Power Shortcut</label2>
-        <action>ActivateWindow(addonbrowser)</action>
+        <action>RunScript(plugin.program.tonyflix.wizard,menu)</action>
     </shortcut>
     <shortcut>
         <icon>special://skin/extras/icons/settings.png</icon>
@@ -31,9 +22,21 @@
         <action>ActivateWindow(interfacesettings)</action>
     </shortcut>
     <shortcut>
-        <icon>special://skin/extras/icons/power.png</icon>
-        <label>$LOCALIZE[13009]</label>
+        <icon>special://skin/extras/icons/addon.png</icon>
+        <label>$LOCALIZE[24001]</label>
         <label2>Power Shortcut</label2>
-        <action>Quit()</action>
+        <action>ActivateWindow(addonbrowser)</action>
+    </shortcut>
+    <shortcut>
+        <icon>special://skin/extras/icons/power.png</icon>
+        <label>Exit Kodi</label>
+        <label2>Power Shortcut</label2>
+        <action>RunScript(plugin.program.tonyflix.wizard,exit)</action>
+    </shortcut>
+    <shortcut>
+        <icon>special://skin/extras/icons/xmark.png</icon>
+        <label>Force close</label>
+        <label2>Power Shortcut</label2>
+        <action>RunScript(plugin.program.tonyflix.wizard,forceclose)</action>
     </shortcut>
 </shortcuts>

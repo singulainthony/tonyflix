@@ -163,10 +163,64 @@ def install_zip_addon(entry):
     return f"{url}"
 
 
-def refresh_repositories():
-    """Ask Kodi to re-read every enabled repository (newly added ones included)."""
-    xbmc.executebuiltin("UpdateAddonRepos", True)
-    xbmc.sleep(5000)
+def _checked_repositories():
+    """Repository add-ons whose add-on list Kodi has fetched (read-only look at Kodi's add-on database)."""
+    import glob
+    import sqlite3
+    dbs = sorted(glob.glob(os.path.join(xbmcvfs.translatePath("special://database/"), "Addons*.db")))
+    if not dbs:
+        return set()
+    try:
+        con = sqlite3.connect(f"file:{dbs[-1]}?mode=ro", uri=True, timeout=2)
+        try:
+            return {row[0] for row in con.execute("SELECT addonID FROM repo WHERE checksum IS NOT NULL AND checksum != ''")}
+        finally:
+            con.close()
+    except sqlite3.Error:
+        return set()
+
+
+def adopt_into_repository(addon_id, repo_id):
+    """Record repo_id as the add-on's update source in Kodi's add-on database.
+
+    The family installs the wizard from a zip, and Kodi never updates zip-installed add-ons (they have no
+    'origin'). Installing from a repository would set exactly this field. Only an empty origin is changed;
+    Kodi reads it at its next start (setup ends by restarting Kodi)."""
+    import glob
+    import sqlite3
+    dbs = sorted(glob.glob(os.path.join(xbmcvfs.translatePath("special://database/"), "Addons*.db")))
+    if not dbs or not is_installed(repo_id):
+        return False
+    try:
+        con = sqlite3.connect(dbs[-1], timeout=5)
+        try:
+            with con:
+                changed = con.execute("UPDATE installed SET origin=? WHERE addonID=? AND (origin IS NULL OR origin='')",
+                                      (repo_id, addon_id)).rowcount
+        finally:
+            con.close()
+    except sqlite3.Error as e:
+        log(f"could not set update source for {addon_id}: {e}")
+        return False
+    if changed:
+        log(f"{addon_id} will update from {repo_id}")
+    return bool(changed)
+
+
+def refresh_repositories(repo_ids, timeout=60):
+    """Wait until Kodi has fetched the add-on list of every newly added repository. Kodi does that by itself
+    when a repository is enabled. We used to force it with UpdateAddonRepos, but doing that while Kodi's own
+    checks are running can deadlock Kodi 21's repository updater (Kodi freezes for good)."""
+    end = time.time() + timeout
+    missing = set(repo_ids)
+    while time.time() < end:
+        missing = set(repo_ids) - _checked_repositories()
+        if not missing:
+            xbmc.sleep(1000)   # let Kodi finish writing what it fetched
+            return True
+        xbmc.sleep(1000)
+    log(f"repositories not checked after {timeout}s: {', '.join(sorted(missing))}")
+    return False
 
 
 def confirm_yes(tries=15):
@@ -218,6 +272,56 @@ def dialog_text():
     return " ".join(xbmc.getInfoLabel(f"Control.GetLabel({i})") for i in (1, 9)).strip()
 
 
+def setting_of(addon_id, setting_id):
+    """An installed add-on's setting ('' if the add-on or setting doesn't exist). Value is never logged."""
+    if not addon_id or not is_installed(addon_id):
+        return ""
+    try:
+        return xbmcaddon.Addon(addon_id).getSetting(setting_id)
+    except RuntimeError:
+        return ""
+
+
+def preseed_settings(addon_id, values):
+    """Write settings for an add-on BEFORE it is installed (Kodi merges them with the add-on's defaults when
+    it loads). Only used when the add-on has no settings yet, so a user's own settings are never touched."""
+    path = os.path.join(xbmcvfs.translatePath("special://profile/addon_data/"), addon_id, "settings.xml")
+    if os.path.exists(path) or is_installed(addon_id):
+        return False
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    root = ET.Element("settings", version="2")
+    for sid, value in values.items():
+        ET.SubElement(root, "setting", id=sid).text = value
+    ET.ElementTree(root).write(path, encoding="utf-8", xml_declaration=False)
+    log(f"preseeded {len(values)} setting(s) for {addon_id}")
+    return True
+
+
+OWN_WINDOW_PROPERTY = "tonyflix.wizard.window"   # set on every wizard screen (see ui.py)
+
+
+def is_own_window(window_id):
+    return xbmc.getInfoLabel(f"Window({window_id}).Property({OWN_WINDOW_PROPERTY})") == "1"
+
+
+def other_dialog_open():
+    """A dialog other than the wizard's own screens is open (Kodi's or another add-on's)."""
+    dlg = xbmcgui.getCurrentWindowDialogId()
+    return dlg != 9999 and not is_own_window(dlg)
+
+
+def close_foreign_dialogs(tries=4):
+    """An add-on's own window (python windows have ids >= 13000) left open on top would block Kodi's install
+    prompt - e.g. a first-run help text. During setup nothing like that should be open: close it."""
+    for _ in range(tries):
+        dlg = xbmcgui.getCurrentWindowDialogId()
+        if dlg < 13000 or is_own_window(dlg):
+            return
+        log(f"closing add-on window {dlg} ('{xbmc.getInfoLabel('Control.GetLabel(1)')}') that blocks the setup")
+        xbmc.executebuiltin("Action(Back)")
+        xbmc.sleep(700)
+
+
 def install_from_repo(addon_id, timeout=300, monitor=None):
     """Kodi InstallAddon (dependencies resolved by Kodi), answering its confirmation prompts.
     Raises InstallError with Kodi's message if Kodi reports a failure."""
@@ -226,11 +330,19 @@ def install_from_repo(addon_id, timeout=300, monitor=None):
             enable(addon_id)
         return "already installed"
     monitor = monitor or xbmc.Monitor()
+    close_foreign_dialogs()
     xbmc.executebuiltin(f"InstallAddon({addon_id})")
     end = time.time() + timeout
     answers = {"install": 1, "skin": 2}   # prompts we may answer for this install, at most this often
     started = time.time()
+    reissued = False
     while time.time() < end:
+        dlg = xbmcgui.getCurrentWindowDialogId()
+        if answers["install"] and not reissued and dlg >= 13000 and not is_own_window(dlg):
+            # an add-on window popped up over Kodi's prompt before we could answer it: close it, ask again
+            close_foreign_dialogs()
+            xbmc.executebuiltin(f"InstallAddon({addon_id})")
+            reissued, started = True, time.time()
         if answers["install"] and time.time() - started > 20 and not is_installed(addon_id) \
                 and xbmcgui.getCurrentWindowDialogId() not in (YESNO_DIALOG, PROGRESS_DIALOG, OK_DIALOG):
             raise InstallError(f"{addon_id} is not available in any enabled repository")

@@ -5,37 +5,140 @@
     "keep auto-updating from their repo. TonyFlix never re-hosts anyone else's add-on."
   ],
   "repositories": [
-    {"id": "repository.jurialmunkey", "name": "jurialmunkey (TMDbHelper, skin helpers)",
-     "index": "https://jurialmunkey.github.io/repository.jurialmunkey/", "zip_pattern": "repository\\.jurialmunkey-[0-9.]+\\.zip"},
-    {"id": "repository.umbrella", "name": "Umbrella",
-     "index": "https://umbrellaplug.github.io/", "zip_pattern": "repository\\.umbrella-[0-9.]+\\.zip"},
-    {"id": "repository.a4ksubtitles", "name": "a4kSubtitles",
-     "zip": "https://a4k-openproject.github.io/a4kSubtitles/packages/a4kSubtitles-repository.zip"}
+    {
+      "id": "repository.jurialmunkey",
+      "name": "jurialmunkey (TMDbHelper, skin helpers)",
+      "index": "https://jurialmunkey.github.io/repository.jurialmunkey/",
+      "zip_pattern": "repository\\.jurialmunkey-[0-9.]+\\.zip"
+    },
+    {
+      "id": "repository.umbrella",
+      "name": "Umbrella",
+      "index": "https://umbrellaplug.github.io/",
+      "zip_pattern": "repository\\.umbrella-[0-9.]+\\.zip"
+    },
+    {
+      "id": "repository.a4ksubtitles",
+      "name": "a4kSubtitles",
+      "zip": "https://a4k-openproject.github.io/a4kSubtitles/packages/a4kSubtitles-repository.zip"
+    }
   ],
   "zip_addons": [
-    {"id": "plugin.video.fenlight", "name": "Fen Light+",
-     "version_url": "https://thejason40.github.io/packages/fen_light_version",
-     "zip": "https://thejason40.github.io/packages/plugin.video.fenlight-{version}.zip",
-     "_why": "Fen Light+ has no Kodi repository; its own updater (thejason40 / thejason40.github.io) keeps it current."}
+    {
+      "id": "plugin.video.fenlight",
+      "name": "Fen Light+",
+      "version_url": "https://thejason40.github.io/packages/fen_light_version",
+      "zip": "https://thejason40.github.io/packages/plugin.video.fenlight-{version}.zip",
+      "_why": "Fen Light+ has no Kodi repository; its own updater (thejason40 / thejason40.github.io) keeps it current."
+    }
   ],
   "addons": [
-    {"id": "plugin.video.themoviedb.helper", "name": "TMDbHelper"},
-    {"id": "script.module.tmdbhelper.sync.trakt", "name": "Trakt sync for TMDbHelper"},
-    {"id": "plugin.video.umbrella", "name": "Umbrella"},
-    {"id": "service.subtitles.a4ksubtitles", "name": "a4kSubtitles"},
-    {"id": "service.tonyflix.maintenance", "name": "TonyFlix Maintenance"}
+    {
+      "id": "plugin.video.themoviedb.helper",
+      "name": "TMDbHelper"
+    },
+    {
+      "id": "script.module.tmdbhelper.sync.trakt",
+      "name": "Trakt sync for TMDbHelper",
+      "preseed": {
+        "preferences_migrated": "true",
+        "credentials_migrated": "true"
+      },
+      "preseed_unless_setting": [
+        "plugin.video.themoviedb.helper",
+        "trakt_token"
+      ],
+      "_preseed_why": "On a fresh box there is nothing to migrate from older TMDbHelper versions. Left to itself the module migrates on first use, and when several Home rows load at once that races and TMDbHelper shows 'Provider module unavailable'. Skipped if an older TMDbHelper Trakt sign-in exists."
+    },
+    {
+      "id": "plugin.video.umbrella",
+      "name": "Umbrella",
+      "preseed": {
+        "umbrella.externalWarning": "true"
+      },
+      "_preseed_why": "Written to Umbrella's settings before it is installed: on first start Umbrella otherwise opens a help window (external providers) that blocks the rest of the setup."
+    },
+    {
+      "id": "service.subtitles.a4ksubtitles",
+      "name": "a4kSubtitles"
+    },
+    {
+      "id": "service.tonyflix.maintenance",
+      "name": "TonyFlix Maintenance"
+    }
   ],
-  "skin": {"id": "skin.tonyflix", "name": "TonyFlix skin"},
+  "skin": {
+    "id": "skin.tonyflix",
+    "name": "TonyFlix skin"
+  },
   "accounts": [
-    {"key": "trakt", "name": "Trakt", "why": "Continue Watching, Up Next, your lists and recommendations",
-     "action": "RunScript(script.module.tmdbhelper.sync.trakt,action=authenticate)",
-     "done_if_property": "TMDbHelper.TraktIsAuth", "on_done": "Skin.SetBool(TonyFlix.TraktLinked)",
-     "requires": "script.module.tmdbhelper.sync.trakt"},
-    {"key": "rd_umbrella", "name": "Real-Debrid in Umbrella", "why": "Streams for the Play button",
-     "action": "RunPlugin(plugin://plugin.video.umbrella/?action=rd_Authorize)",
-     "done_if_setting": ["plugin.video.umbrella", "realdebridtoken"], "requires": "plugin.video.umbrella"},
-    {"key": "rd_fenlight", "name": "Real-Debrid in Fen Light+", "why": "Streams for \"Play with...\" (backup player)",
-     "action": "RunPlugin(plugin://plugin.video.fenlight/?mode=real_debrid.authenticate)",
-     "requires": "plugin.video.fenlight", "optional": true}
+    {
+      "key": "trakt",
+      "name": "Trakt",
+      "why": "Continue Watching, Up Next and your lists",
+      "requires": "script.module.tmdbhelper.sync.trakt",
+      "sign_in": "RunScript(script.module.tmdbhelper.sync.trakt,action=authenticate)",
+      "sign_out": "RunScript(script.module.tmdbhelper.sync.trakt,action=revoke)",
+      "_sign_out_note": "TMDbHelper asks 'are you sure' itself, so TonyFlix doesn't ask again.",
+      "status": {
+        "property": "TMDbHelper.TraktIsAuth"
+      },
+      "on_sign_in": "Skin.SetBool(TonyFlix.TraktLinked)",
+      "on_sign_out": "Skin.Reset(TonyFlix.TraktLinked)"
+    },
+    {
+      "key": "rd_umbrella",
+      "name": "Real-Debrid",
+      "why": "Streams for the Play button",
+      "requires": "plugin.video.umbrella",
+      "sign_in": "RunPlugin(plugin://plugin.video.umbrella/?action=rd_Authorize)",
+      "close_after_sign_in": "addonsettings",
+      "_close_note": "Umbrella's rd_Authorize always opens its settings page after a successful sign-in.",
+      "sign_out_settings": {
+        "addon": "plugin.video.umbrella",
+        "guard_property": "umbrella.updateSettings",
+        "clear": [
+          "realdebrid.clientid",
+          "realdebridsecret",
+          "realdebridtoken",
+          "realdebridrefresh",
+          "realdebridusername"
+        ],
+        "_why": "Same settings Umbrella's own rd_Revoke clears; that action also opens Umbrella's settings and an OK box."
+      },
+      "status": {
+        "setting": [
+          "plugin.video.umbrella",
+          "realdebridtoken"
+        ]
+      },
+      "username": {
+        "setting": [
+          "plugin.video.umbrella",
+          "realdebridusername"
+        ]
+      }
+    },
+    {
+      "key": "rd_fenlight",
+      "name": "Real-Debrid (backup player)",
+      "why": "Streams for \"Play with...\" (Fen Light+)",
+      "requires": "plugin.video.fenlight",
+      "optional": true,
+      "sign_in": "RunPlugin(plugin://plugin.video.fenlight/?mode=real_debrid.authenticate)",
+      "sign_out": "RunPlugin(plugin://plugin.video.fenlight/?mode=real_debrid.revoke_authentication)",
+      "status": {
+        "property": "fenlight.rd.token",
+        "empty": [
+          "empty_setting"
+        ]
+      },
+      "username": {
+        "property": "fenlight.rd.account_id",
+        "empty": [
+          "empty_setting"
+        ]
+      }
+    }
   ]
 }

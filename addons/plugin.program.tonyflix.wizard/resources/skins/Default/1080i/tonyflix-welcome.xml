@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- First screen of setup: one question (start?) with the speed setting inline. Any-skin safe (font13 only). -->
+<window type="dialog">
+    <defaultcontrol always="true">300</defaultcontrol>
+    <coordinates><left>0</left><top>0</top></coordinates>
+    <animation effect="fade" start="0" end="100" time="250">WindowOpen</animation>
+    <animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+    <controls>
+        <control type="image">
+            <left>0</left><top>0</top><width>1920</width><height>1080</height>
+            <texture colordiffuse="FF0E0E10">white.png</texture>
+        </control>
+        <control type="image">
+            <left>0</left><top>150</top><width>1920</width><height>60</height>
+            <aspectratio>keep</aspectratio>
+            <texture>wordmark.png</texture>
+        </control>
+        <control type="image">
+            <left>0</left><top>232</top><width>1920</width><height>116</height>
+            <aspectratio>keep</aspectratio>
+            <texture>h_setup.png</texture>
+        </control>
+        <control type="label" id="10">
+            <left>410</left><top>372</top><width>1100</width><height>140</height>
+            <font>font13</font><align>center</align><aligny>top</aligny><wrapmultiline>true</wrapmultiline>
+            <textcolor>FFA3A3AD</textcolor>
+            <label>Installs everything TonyFlix needs from the official sources and tunes Kodi for this box. It takes a few minutes, and you won't need to press anything until it's time to sign in.</label>
+        </control>
+
+        <control type="button" id="301">
+            <description>Speed setting (select to switch Lite / Standard)</description>
+            <left>560</left><top>556</top><width>800</width><height>96</height>
+            <font>font13</font><align>center</align><aligny>center</aligny>
+            <textcolor>FFECECEF</textcolor><focusedcolor>FF1B1204</focusedcolor>
+            <texturefocus colordiffuse="FFF5A524" border="28">rounded.png</texturefocus>
+            <texturenofocus colordiffuse="FF1F1F23" border="28">rounded.png</texturenofocus>
+            <ondown>300</ondown>
+            <onup>noop</onup>
+        </control>
+        <control type="label" id="11">
+            <left>410</left><top>664</top><width>1100</width><height>90</height>
+            <font>font13</font><align>center</align><aligny>top</aligny><wrapmultiline>true</wrapmultiline>
+            <textcolor>FF8A8A94</textcolor>
+        </control>
+
+        <control type="button" id="300">
+            <left>640</left><top>790</top><width>380</width><height>96</height>
+            <label>[B]Start setup[/B]</label>
+            <font>font13</font><align>center</align><aligny>center</aligny>
+            <textcolor>FFECECEF</textcolor><focusedcolor>FF1B1204</focusedcolor>
+            <texturefocus colordiffuse="FFF5A524" border="28">rounded.png</texturefocus>
+            <texturenofocus colordiffuse="FF1F1F23" border="28">rounded.png</texturenofocus>
+            <onup>301</onup>
+            <onright>302</onright>
+            <onleft>noop</onleft>
+        </control>
+        <control type="button" id="302">
+            <left>1040</left><top>790</top><width>240</width><height>96</height>
+            <label>Not now</label>
+            <font>font13</font><align>center</align><aligny>center</aligny>
+            <textcolor>FFECECEF</textcolor><focusedcolor>FF1B1204</focusedcolor>
+            <texturefocus colordiffuse="FFF5A524" border="28">rounded.png</texturefocus>
+            <texturenofocus colordiffuse="FF1F1F23" border="28">rounded.png</texturenofocus>
+            <onup>301</onup>
+            <onleft>300</onleft>
+            <onright>noop</onright>
+        </control>
+    </controls>
+</window>

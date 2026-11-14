@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.program.tonyflix.wizard" name="TonyFlix Wizard" version="0.2.5" provider-name="TonyFlix">
+<addon id="plugin.program.tonyflix.wizard" name="TonyFlix Wizard" version="0.3.1" provider-name="TonyFlix">
     <requires>
         <import addon="xbmc.python" version="3.0.1" />
     </requires>
@@ -57,7 +57,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="skin.tonyflix" name="TonyFlix" provider-name="TonyFlix (based on Arctic Horizon 2 by jurialmunkey)" version="1.0.0">
+<addon id="skin.tonyflix" name="TonyFlix" provider-name="TonyFlix (based on Arctic Horizon 2 by jurialmunkey)" version="1.0.1">
     <requires>
         <import addon="xbmc.gui" version="5.17.0" />
         <import addon="script.skinshortcuts" version="0.4.0" />

@@ -39,15 +39,46 @@
 
 
     <include name="skinshortcuts-template-powermenu">
+        <!-- Used until Skin Shortcuts has built the menus (see shortcuts/powermenu.DATA.xml). -->
         <include content="Dialog_Menu_Button">
-            <param name="id" value="9099" />
-            <param name="groupid" value="9199" />
+            <param name="id" value="9096" />
+            <param name="groupid" value="9196" />
+            <param name="control" value="button" />
+            <param name="icon" value="special://skin/extras/icons/circle-user.png" />
+            <param name="bordersize" value="10" />
+            <label>Accounts</label>
+            <onclick condition="Window.IsActive(DialogButtonMenu.xml)">Close</onclick>
+            <onclick>RunScript(plugin.program.tonyflix.wizard,accounts)</onclick>
+        </include>
+        <include content="Dialog_Menu_Button">
+            <param name="id" value="9097" />
+            <param name="groupid" value="9197" />
             <param name="control" value="button" />
             <param name="icon" value="special://skin/extras/icons/settings.png" />
             <param name="bordersize" value="10" />
             <label>$LOCALIZE[5]</label>
             <onclick condition="Window.IsActive(DialogButtonMenu.xml)">Close</onclick>
             <onclick>ActivateWindow(interfacesettings)</onclick>
+        </include>
+        <include content="Dialog_Menu_Button">
+            <param name="id" value="9098" />
+            <param name="groupid" value="9198" />
+            <param name="control" value="button" />
+            <param name="icon" value="special://skin/extras/icons/power.png" />
+            <param name="bordersize" value="10" />
+            <label>Exit Kodi</label>
+            <onclick condition="Window.IsActive(DialogButtonMenu.xml)">Close</onclick>
+            <onclick>RunScript(plugin.program.tonyflix.wizard,exit)</onclick>
+        </include>
+        <include content="Dialog_Menu_Button">
+            <param name="id" value="9099" />
+            <param name="groupid" value="9199" />
+            <param name="control" value="button" />
+            <param name="icon" value="special://skin/extras/icons/xmark.png" />
+            <param name="bordersize" value="10" />
+            <label>Force close</label>
+            <onclick condition="Window.IsActive(DialogButtonMenu.xml)">Close</onclick>
+            <onclick>RunScript(plugin.program.tonyflix.wizard,forceclose)</onclick>
         </include>
     </include>
 </includes>

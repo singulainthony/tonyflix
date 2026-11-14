@@ -416,6 +416,58 @@ plain AH2 as well. Watch for it on the box. During testing, restart Kodi instead
       candidate stage.
   - Zips are now reproducible (fixed timestamps), so a rebuild only changes the zips of add-ons that changed.
 
+**Feedback round 1 (2026-11-13): leaner setup, accounts, power menu**
+
+User feedback from the T95 and the Mac: dialog boxes kept appearing and disappearing, installation had too many
+steps, too many popups and took too long, there was no way to close Kodi from the power button, and the account
+manager couldn't be found.
+
+- **One install step for family:** they install `tonyflix-setup.zip` (the wizard) with Install from zip. The wizard
+  installs `repository.tonyflix` itself.
+  - Kodi never updates zip-installed add-ons: their `origin` is empty.
+  - So setup records `repository.tonyflix` as the wizard's origin in Kodi's add-on database, the field a repository
+    install would set. Kodi reads it on the restart at the end of setup.
+  - Tested: Kodi then updated the wizard from 0.3.0 to 0.3.1 by itself.
+- **No popups:** setup is now three of the wizard's own screens (`resources/skins/Default/1080i`, `font13` only, so they
+  work under Estuary and TonyFlix):
+  - **Welcome:** Start setup, with the speed setting inline.
+  - **Full-screen progress cover:** modeless and drawn above Kodi's dialogs (zorder). Kodi's install prompts are
+    still answered underneath it, but never seen. If a dialog that needs the user stays open for 6 s or more, the
+    cover steps aside.
+  - **Accounts:** shown at the end, with a Finish button.
+  - Screenshots of a fresh run show no Kodi dialogs at all.
+- **Faster:** a fresh setup now takes about 75 s on the Mac (it was about 110 s).
+  - **Skin switch without a revert:** the skin skips its Skin Shortcuts menu build while `TonyFlix.HoldMenuBuild`
+    is set. The wizard builds the menus itself after "Keep skin?" is answered, then waits for the reload so its
+    next screen isn't closed by it.
+  - **No forced repository check:** forcing `UpdateAddonRepos` while Kodi was already checking the new repositories
+    deadlocked Kodi 21 (stack sample: `CRepositoryUpdater` timer, job and main thread waiting on each other). The
+    wizard now waits until Kodi has fetched each repository by itself, reading Kodi's add-on database read-only.
+  - **Third-party first-run surprises are pre-empted:**
+    - Umbrella's one-time "external providers" help window blocked every later install. The wizard pre-sets
+      `umbrella.externalWarning`.
+    - TMDbHelper's Trakt module migrates its settings on first use. When several Home rows load at once that races,
+      and TMDbHelper shows "Provider module unavailable". On fresh boxes there is nothing to migrate, so the flags
+      are pre-set.
+    - Any other add-on window that blocks Kodi's install prompt is closed.
+- **Accounts screen** (power menu › Accounts, the TonyFlix menu, and the end of setup): Trakt, Real-Debrid
+  (Umbrella) and Real-Debrid (Fen Light+).
+  - It shows who's signed in, and handles Sign in / Sign out.
+  - Sign-in still uses each add-on's own device-code flow.
+  - After an Umbrella sign-in, the Umbrella settings page that opens is closed automatically.
+  - Umbrella sign-out clears the same settings Umbrella's own sign-out clears (that action would also open its
+    settings and an OK box).
+- **Power menu:** Accounts, TonyFlix (the wizard menu), Settings, Add-ons, **Exit Kodi**, **Force close**.
+  - Skin Shortcuts hid the old Quit item because `System.ShowExitButton` was false.
+  - Exit and Force close now run through the wizard. Force close asks first, then ends Kodi's process immediately.
+  - Tested: the process was gone at once, and Kodi started normally afterwards.
+- **Fresh-profile runs:** runs 9–14 on the Mac. The final run had no problems, every add-on had the right origin,
+  and Kodi restarted cleanly with no error dialogs.
+- **Still open:** row loading on weak boxes. Measured on the Mac:
+  - Kodi runs every add-on on one Python lock, so rows load one after another.
+  - A warm row costs about 0.15 s of CPU (estimated 1–2 s on a T95), and a cold one about 1.2 s.
+  - Other add-ons' start-up services compete for the same lock.
+
 **Next phase:** Phase 8 (testing on the real T95 box: hosting, install from zip, speed measurements).
 
 **Follow-up idea:** pack `media/` into `Textures.xbt` with Kodi's TexturePacker, which loads faster on Android.

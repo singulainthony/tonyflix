@@ -90,7 +90,8 @@ def addon_xml_body(raw):
     return ET.tostring(root, encoding="unicode")
 
 
-WIZARD_DATA = ADDONS / "plugin.program.tonyflix.wizard" / "resources" / "data"
+WIZARD_ID = "plugin.program.tonyflix.wizard"
+WIZARD_DATA = ADDONS / WIZARD_ID / "resources" / "data"
 BUILD_DATA = [  # (source in build/, destination under the wizard's resources/data/)
     ("profiles/profiles.json", "profiles.json"),
     ("addon_defaults/defaults.json", "defaults.json"),
@@ -99,7 +100,7 @@ BUILD_DATA = [  # (source in build/, destination under the wizard's resources/da
 ]
 
 
-def sync_wizard_data():
+def sync_wizard_data(cfg):
     """Copy build/ data (single source of truth) into the wizard add-on."""
     if not WIZARD_DATA.parent.parent.exists():
         return
@@ -113,6 +114,19 @@ def sync_wizard_data():
         else:
             shutil.copy2(s, d)
     add_skin_requires(WIZARD_DATA / "install.json")
+    add_own_repository(WIZARD_DATA / "install.json", cfg)
+
+
+def add_own_repository(install_json, cfg):
+    """The family installs only the wizard (one zip); the wizard then installs repository.tonyflix
+    itself, which keeps the wizard, skin and maintenance service updated."""
+    import json
+    data = json.loads(install_json.read_text())
+    _, version, _, _ = read_addon(ADDONS / "repository.tonyflix", cfg)
+    url = f"{cfg['base_url']}/{cfg['repo_subdir']}/zips/repository.tonyflix/repository.tonyflix-{version}.zip"
+    data["repositories"] = [r for r in data["repositories"] if r["id"] != "repository.tonyflix"]
+    data["repositories"].insert(0, {"id": "repository.tonyflix", "name": "TonyFlix updates", "zip": url})
+    install_json.write_text(json.dumps(data, indent=2) + "\n")
 
 
 def add_skin_requires(install_json):
@@ -139,14 +153,22 @@ REDIRECT_PAGE = """<!doctype html><html><head><meta charset="utf-8">
 """
 
 
-def write_site(cfg, repo_zip):
+SETUP_ZIP = "tonyflix-setup.zip"
+
+
+def write_site(cfg, repo_zip, wizard_zip):
     """docs/index.html = the family install guide (build/site/index.html). Kodi's File Manager also
     browses this page as a source: it lists links whose text is exactly the file name (the repo zip)."""
     DOCS.mkdir(exist_ok=True)
     (DOCS / ".nojekyll").write_text("")
-    if not repo_zip:
-        raise SystemExit("no repository add-on found - the install page needs one")
-    shutil.copy2(repo_zip, DOCS / repo_zip.name)  # top-level copy = short path in Kodi
+    if not repo_zip or not wizard_zip:
+        raise SystemExit("the install page needs repository.tonyflix and the wizard")
+    # What the family installs: the wizard, under a short, stable name (Kodi only cares about the
+    # add-on folder inside the zip). The wizard installs repository.tonyflix itself.
+    shutil.copy2(wizard_zip, DOCS / SETUP_ZIP)
+    old = DOCS / repo_zip.name
+    if old.exists():
+        old.unlink()      # the bare repository zip is no longer offered at the top level
     shutil.copy2(ADDONS / "repository.tonyflix" / "icon.png", DOCS / "icon.png")
     downloads = cfg.get("kodi_downloads", {})
     for name, url in downloads.items():   # short addresses to type into the Downloader app
@@ -157,7 +179,7 @@ def write_site(cfg, repo_zip):
         "BUILD_NAME": cfg["build_name"],
         "BUILD_NAME_UPPER": cfg["build_name"].upper(),
         "BASE_URL": cfg["base_url"],
-        "REPO_ZIP": repo_zip.name,
+        "SETUP_ZIP": SETUP_ZIP,
         "KODI64_URL": downloads.get("kodi64", "https://kodi.tv/download/android/"),
         "KODI32_URL": downloads.get("kodi32", "https://kodi.tv/download/android/"),
     }
@@ -170,7 +192,6 @@ def write_site(cfg, repo_zip):
 
 
 def main():
-    sync_wizard_data()
     ap = argparse.ArgumentParser()
     ap.add_argument("--clean", action="store_true", help="delete the repo output first")
     ap.add_argument("--base-url", help="override base_url (e.g. http://127.0.0.1:8099 for local testing)")
@@ -182,12 +203,13 @@ def main():
     global DOCS
     if args.out:
         DOCS = args.out.resolve()
+    sync_wizard_data(cfg)
     repo = DOCS / cfg["repo_subdir"]
     if args.clean and repo.exists():
         shutil.rmtree(repo)
     zips_root = repo / "zips"
 
-    entries, repo_zip = [], None
+    entries, repo_zip, wizard_zip = [], None, None
     folders = sorted(p for p in ADDONS.iterdir() if (p / "addon.xml").is_file())
     if not folders:
         sys.exit("No add-ons found in addons/")
@@ -206,6 +228,8 @@ def main():
         entries.append(addon_xml_body(raw))
         if addon_id.startswith("repository."):
             repo_zip = zpath
+        if addon_id == WIZARD_ID:
+            wizard_zip = zpath
         size_mb = zpath.stat().st_size / 1_048_576
         print(f"  {addon_id} {version}  ({size_mb:.1f} MB)")
 
@@ -214,7 +238,7 @@ def main():
     (repo / "addons.xml").write_text(addons_xml, encoding="utf-8")
     (repo / "addons.xml.md5").write_text(hashlib.md5(addons_xml.encode("utf-8")).hexdigest())
 
-    write_site(cfg, repo_zip)
+    write_site(cfg, repo_zip, wizard_zip)
     shown = repo.relative_to(ROOT) if repo.is_relative_to(ROOT) else repo
     print(f"Repo written to {shown}  (base_url: {cfg['base_url']})")
 

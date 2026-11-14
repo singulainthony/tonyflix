@@ -96,8 +96,8 @@ def cmd_sync():
     if not BACKUP.exists():
         sys.exit("Test profile is not active (run `in` first) - refusing to touch the real profile.")
     sys.path.insert(0, str(ROOT / "tools"))
-    from build_repo import sync_wizard_data
-    sync_wizard_data()
+    from build_repo import load_config, sync_wizard_data
+    sync_wizard_data(load_config())
     excludes = sum((["--exclude", g] for g in GENERATED), [])
     for src in sorted((ROOT / "addons").iterdir()):
         if not (src / "addon.xml").is_file() or src.name.startswith("repository."):

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Full-screen cover shown while setup runs. It is opened modeless (show) with a high zorder, so it is drawn
+     ABOVE Kodi's own install prompts and progress boxes (which the wizard answers itself) while those prompts
+     still receive the wizard's key presses. Result: one calm screen instead of dialogs flashing on and off. -->
+<window type="dialog">
+    <zorder>90</zorder>
+    <coordinates><left>0</left><top>0</top></coordinates>
+    <animation effect="fade" start="0" end="100" time="250">WindowOpen</animation>
+    <animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+    <controls>
+        <control type="image">
+            <left>0</left><top>0</top><width>1920</width><height>1080</height>
+            <texture colordiffuse="FF0E0E10">white.png</texture>
+        </control>
+        <control type="image">
+            <left>0</left><top>240</top><width>1920</width><height>60</height>
+            <aspectratio>keep</aspectratio>
+            <texture>wordmark.png</texture>
+        </control>
+        <control type="image">
+            <left>0</left><top>322</top><width>1920</width><height>116</height>
+            <aspectratio>keep</aspectratio>
+            <texture>h_progress.png</texture>
+        </control>
+        <control type="label" id="20">
+            <left>360</left><top>486</top><width>1200</width><height>50</height>
+            <font>font13</font><align>center</align><aligny>center</aligny>
+            <textcolor>FFECECEF</textcolor>
+            <label>Starting...</label>
+        </control>
+        <control type="image">
+            <left>560</left><top>566</top><width>800</width><height>12</height>
+            <texture colordiffuse="FF26262B">white.png</texture>
+        </control>
+        <control type="image" id="21">
+            <description>Progress fill: the wizard sets its width (0-800)</description>
+            <left>560</left><top>566</top><width>1</width><height>12</height>
+            <texture colordiffuse="FFF5A524">white.png</texture>
+        </control>
+        <control type="label" id="22">
+            <left>360</left><top>598</top><width>1200</width><height>44</height>
+            <font>font13</font><align>center</align><aligny>center</aligny>
+            <textcolor>FF8A8A94</textcolor>
+        </control>
+        <control type="label" id="23">
+            <left>410</left><top>840</top><width>1100</width><height>100</height>
+            <font>font13</font><align>center</align><aligny>top</aligny><wrapmultiline>true</wrapmultiline>
+            <textcolor>FF8A8A94</textcolor>
+            <label>This takes a few minutes. You don't need to press anything. The screen may blink once while Kodi switches to the TonyFlix look.</label>
+        </control>
+    </controls>
+</window>

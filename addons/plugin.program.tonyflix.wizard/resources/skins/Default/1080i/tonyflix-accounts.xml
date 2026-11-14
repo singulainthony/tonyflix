@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TonyFlix Accounts. Works under any skin: only font13 + the wizard's own media are used. -->
+<window type="dialog">
+    <defaultcontrol always="true">100</defaultcontrol>
+    <coordinates><left>0</left><top>0</top></coordinates>
+    <animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
+    <animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+    <controls>
+        <control type="image">
+            <left>0</left><top>0</top><width>1920</width><height>1080</height>
+            <texture colordiffuse="FF0E0E10">white.png</texture>
+        </control>
+        <control type="image">
+            <left>0</left><top>96</top><width>1920</width><height>56</height>
+            <aspectratio>keep</aspectratio>
+            <texture>wordmark.png</texture>
+        </control>
+        <control type="image">
+            <left>0</left><top>170</top><width>1920</width><height>110</height>
+            <aspectratio>keep</aspectratio>
+            <texture>h_accounts.png</texture>
+        </control>
+        <control type="label" id="10">
+            <left>360</left><top>300</top><width>1200</width><height>90</height>
+            <font>font13</font><align>center</align><aligny>top</aligny><wrapmultiline>true</wrapmultiline>
+            <textcolor>FFA3A3AD</textcolor>
+            <label>Sign in once and TonyFlix remembers. A code appears on the TV: enter it on your phone. You never type a password here.</label>
+        </control>
+
+        <control type="list" id="100">
+            <left>440</left><top>410</top><width>1040</width><height>480</height>
+            <orientation>vertical</orientation>
+            <onup>noop</onup>
+            <ondown>200</ondown>
+            <scrolltime>150</scrolltime>
+            <itemlayout height="160" width="1040">
+                <control type="image">
+                    <left>0</left><top>0</top><width>1040</width><height>144</height>
+                    <texture colordiffuse="FF17171A" border="28">rounded.png</texture>
+                </control>
+                <control type="image">
+                    <left>40</left><top>48</top><width>48</width><height>48</height>
+                    <texture colordiffuse="$INFO[ListItem.Property(iconcolor)]">$INFO[ListItem.Property(icon)]</texture>
+                </control>
+                <control type="label">
+                    <left>120</left><top>26</top><width>560</width><height>48</height>
+                    <font>font13</font><textcolor>FFECECEF</textcolor><aligny>center</aligny>
+                    <label>[B]$INFO[ListItem.Label][/B]</label>
+                </control>
+                <control type="label">
+                    <left>120</left><top>72</top><width>600</width><height>48</height>
+                    <font>font13</font><textcolor>FFA3A3AD</textcolor><aligny>center</aligny>
+                    <label>$INFO[ListItem.Label2]</label>
+                </control>
+                <control type="label">
+                    <left>680</left><top>26</top><width>320</width><height>48</height>
+                    <font>font13</font><align>right</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(status)]</label>
+                </control>
+            </itemlayout>
+            <focusedlayout height="160" width="1040">
+                <control type="image">
+                    <left>0</left><top>0</top><width>1040</width><height>144</height>
+                    <texture colordiffuse="FF24242A" border="28">rounded.png</texture>
+                </control>
+                <control type="image">
+                    <left>0</left><top>0</top><width>1040</width><height>144</height>
+                    <texture colordiffuse="FFF5A524" border="28">rounded_ring.png</texture>
+                    <visible>Control.HasFocus(100)</visible>
+                </control>
+                <control type="image">
+                    <left>40</left><top>48</top><width>48</width><height>48</height>
+                    <texture colordiffuse="$INFO[ListItem.Property(iconcolor)]">$INFO[ListItem.Property(icon)]</texture>
+                </control>
+                <control type="label">
+                    <left>120</left><top>26</top><width>560</width><height>48</height>
+                    <font>font13</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny>
+                    <label>[B]$INFO[ListItem.Label][/B]</label>
+                </control>
+                <control type="label">
+                    <left>120</left><top>72</top><width>600</width><height>48</height>
+                    <font>font13</font><textcolor>FFC4C4CC</textcolor><aligny>center</aligny>
+                    <label>$INFO[ListItem.Label2]</label>
+                </control>
+                <control type="label">
+                    <left>680</left><top>26</top><width>320</width><height>48</height>
+                    <font>font13</font><align>right</align><aligny>center</aligny>
+                    <label>$INFO[ListItem.Property(status)]</label>
+                </control>
+                <control type="label">
+                    <left>680</left><top>72</top><width>320</width><height>48</height>
+                    <font>font13</font><align>right</align><aligny>center</aligny><textcolor>FFF5A524</textcolor>
+                    <label>[B]$INFO[ListItem.Property(action)][/B]</label>
+                    <visible>Control.HasFocus(100)</visible>
+                </control>
+            </focusedlayout>
+        </control>
+
+        <control type="button" id="200">
+            <left>810</left><top>920</top><width>300</width><height>88</height>
+            <label>Done</label>
+            <font>font13</font><align>center</align><aligny>center</aligny>
+            <textcolor>FFECECEF</textcolor><focusedcolor>FF1B1204</focusedcolor>
+            <texturefocus colordiffuse="FFF5A524" border="28">rounded.png</texturefocus>
+            <texturenofocus colordiffuse="FF1F1F23" border="28">rounded.png</texturenofocus>
+            <onup>100</onup>
+        </control>
+    </controls>
+</window>
