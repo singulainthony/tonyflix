@@ -6,6 +6,7 @@ import sys
 
 import xbmc
 import xbmcaddon
+import xbmcgui
 
 sys.path.insert(0, os.path.join(xbmcaddon.Addon().getAddonInfo("path"), "resources", "lib"))
 from tonyflix import config, setup  # noqa: E402
@@ -34,9 +35,15 @@ def main():
         # An update changed TonyFlix's add-on settings (e.g. the default player): apply them once, quietly.
         wanted = config.defaults_version()
         if state.get("defaults_version") != wanted and not monitor.waitForAbort(20) and wait_until_idle(monitor):
+            from tonyflix import installer
+            problems = setup.install_missing(installer.load_install())
             report = config.apply_all()
             setup.save_setup(defaults_version=wanted)
             log(f"TonyFlix settings v{wanted} applied after an update ({len(report)} items)")
+            if problems:
+                log("update problems: " + "; ".join(problems))
+                xbmcgui.Dialog().notification("TonyFlix", "Some add-ons couldn't be added. Power menu > TonyFlix > "
+                                              "Run full setup again.", time=8000)
         return
     if state.get("declined") or xbmc.getSkinDir() == setup.SKIN_ID:
         return

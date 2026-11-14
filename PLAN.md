@@ -498,6 +498,17 @@ it is non-empty. On the T95 the user found no providers to play anything, as exp
 They expected Real-Debrid and TMDb options under Accounts. TMDbHelper has no Real-Debrid support: Real-Debrid
 only comes back with a player add-on. Not yet tested in Kodi.
 
+**2026-11-14 (evening): Umbrella and Fen Light+ brought back** (wizard 0.3.5, defaults `_version` 4) at the
+user's request. Everything is as before the removal: their repository and installs, both player files, and the
+Real-Debrid accounts. TMDb stays on the Accounts screen, and there is still no default player (Play asks).
+- New: `setup.install_missing()`. When the defaults version rises on a box that is already set up, the wizard installs
+  (or re-enables) anything TonyFlix includes that the box lacks. It runs behind the same setup screen, so an update
+  can add add-ons, not only change settings.
+- Tested on a copy of a box set up without them (like the user's T95): at the next start the wizard updated itself
+  to 0.3.5, the setup screen ran 4 steps (repository, check, Umbrella, Fen Light+) with no popups, and Play listed
+  Umbrella and Fen Light+.
+- "No sources found" is unchanged: both still need source providers set up in their own settings.
+
 **Next phase:** Phase 8 (testing on the real T95 box: hosting, install from zip, speed measurements).
 
 **Follow-up idea:** pack `media/` into `Textures.xbt` with Kodi's TexturePacker, which loads faster on Android.

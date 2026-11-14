@@ -2,7 +2,7 @@
 #   RunScript(plugin.program.tonyflix.wizard)                     -> setup (first time) or the TonyFlix menu
 #   RunScript(plugin.program.tonyflix.wizard,menu)                -> same
 #   RunScript(plugin.program.tonyflix.wizard,setup)               -> full setup
-#   RunScript(plugin.program.tonyflix.wizard,accounts)            -> Accounts screen (Trakt, TMDb)
+#   RunScript(plugin.program.tonyflix.wizard,accounts)            -> Accounts screen (Trakt, Real-Debrid, TMDb)
 #   RunScript(plugin.program.tonyflix.wizard,exit)                -> close Kodi normally
 #   RunScript(plugin.program.tonyflix.wizard,forceclose)          -> kill Kodi at once (asks first)
 #   RunScript(plugin.program.tonyflix.wizard,repair)              -> re-apply configuration

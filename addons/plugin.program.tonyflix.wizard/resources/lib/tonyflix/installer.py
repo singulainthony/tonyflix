@@ -140,7 +140,9 @@ def register_and_enable(addon_id, timeout=30):
 
 
 def install_repository(repo):
-    if is_installed(repo["id"]) and is_enabled(repo["id"]):
+    if is_installed(repo["id"]):
+        if not is_enabled(repo["id"]):
+            enable(repo["id"])
         return "already installed"
     url = repo.get("zip") or find_zip_on_index(repo["index"], repo["zip_pattern"])
     addon_id = unpack_addon(download(url, os.path.basename(url)))
@@ -149,7 +151,9 @@ def install_repository(repo):
 
 
 def install_zip_addon(entry):
-    if is_installed(entry["id"]) and is_enabled(entry["id"]):
+    if is_installed(entry["id"]):
+        if not is_enabled(entry["id"]):
+            enable(entry["id"])
         return "already installed"
     version = read_url(entry["version_url"]).decode().strip()
     if not re.match(r"^[0-9][0-9.]*$", version):

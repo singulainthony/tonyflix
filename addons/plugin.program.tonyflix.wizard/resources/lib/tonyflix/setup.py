@@ -147,30 +147,22 @@ def install_skin(skin):
 
 # ------------------------------------------------------------------ setup
 
-def full_setup():
-    inst = installer.load_install()
-    suggested, reasons = suggested_profile()
-    log(f"suggested profile {suggested} ({', '.join(reasons) or 'capable box'})")
-    profile = ui.ask_to_start(suggested)
-    if not profile:
-        save_setup(declined=True)
-        return
+def install_plan(repos, addons, zips):
+    return ([(f"Adding {r['name']}", "repo", r) for r in repos] +
+            ([("Checking for the latest versions", "refresh", None)] if repos else []) +
+            [(f"Installing {a['name']}", "addon", a) for a in addons] +
+            [(f"Installing {z['name']}", "zip", z) for z in zips])
 
-    plan = ([(f"Adding {r['name']}", "repo", r) for r in inst["repositories"]] +
-            [("Checking for the latest versions", "refresh", None)] +
-            [(f"Installing {a['name']}", "addon", a) for a in inst["addons"]] +
-            [(f"Installing {z['name']}", "zip", z) for z in inst["zip_addons"]] +
-            [("Setting up players and add-ons", "config", None),
-             (f"Tuning Kodi for this box ({profile.title()})", "profile", None),
-             ("Installing the TonyFlix look", "skin", inst["skin"]),
-             ("Switching to TonyFlix", "switch", inst["skin"])])
+
+def run_plan(plan, inst, profile=None):
+    """Run install/config steps behind the full-screen setup screen. Returns a list of problems."""
     problems = []
     screen = ui.SetupScreen()
     try:
         # Kodi's default "official repositories only" would install the OLD TMDbHelper 5.x from the
         # official Kodi repo instead of 6.x from jurialmunkey's repo (the skin needs 6.x).
         installer.jsonrpc("Settings.SetSettingValue", {"setting": "addons.updatemode", "value": 1})
-        # Settings some add-ons need BEFORE their first start (before anything that depends on them installs).
+        # Settings some add-ons need BEFORE their first start (only written for add-ons not installed yet).
         for a in inst["addons"]:
             if a.get("preseed") and not installer.setting_of(*a.get("preseed_unless_setting", [None, None])):
                 installer.preseed_settings(a["id"], a["preseed"])
@@ -204,6 +196,38 @@ def full_setup():
         screen.update(100, "Almost done", "")
     finally:
         screen.close()
+    return problems
+
+
+def install_missing(inst):
+    """For boxes that are already set up: install (or re-enable) whatever TonyFlix includes now but this box
+    doesn't have - e.g. after an update brought Umbrella and Fen Light+ back. Returns problems."""
+    def ready(aid):
+        return installer.is_installed(aid) and installer.is_enabled(aid)
+    repos = [r for r in inst["repositories"] if not ready(r["id"])]
+    addons = [a for a in inst["addons"] if not ready(a["id"])]
+    zips = [z for z in inst["zip_addons"] if not ready(z["id"])]
+    if not (repos or addons or zips):
+        return []
+    log("adding missing parts: " + ", ".join(x["id"] for x in repos + addons + zips))
+    return run_plan(install_plan(repos, addons, zips), inst)
+
+
+def full_setup():
+    inst = installer.load_install()
+    suggested, reasons = suggested_profile()
+    log(f"suggested profile {suggested} ({', '.join(reasons) or 'capable box'})")
+    profile = ui.ask_to_start(suggested)
+    if not profile:
+        save_setup(declined=True)
+        return
+
+    plan = (install_plan(inst["repositories"], inst["addons"], inst["zip_addons"]) +
+            [("Setting up players and add-ons", "config", None),
+             (f"Tuning Kodi for this box ({profile.title()})", "profile", None),
+             ("Installing the TonyFlix look", "skin", inst["skin"]),
+             ("Switching to TonyFlix", "switch", inst["skin"])])
+    problems = run_plan(plan, inst, profile)
 
     save_setup(done=True, declined=False, when=time.strftime("%Y-%m-%d %H:%M"), profile=profile, problems=problems,
                defaults_version=config.defaults_version())
@@ -213,7 +237,7 @@ def full_setup():
                             "[CR][CR]Open TonyFlix > Run full setup again to retry them.")
     signed = ui.accounts_screen(
         inst["accounts"],
-        intro="Last step: sign in to Trakt for Continue Watching, Up Next and your lists. A code appears on the TV: "
+        intro="Last step: sign in so TonyFlix can play and remember what you watch. A code appears on the TV: "
               "enter it on your phone. You can also do this later from the power menu > Accounts.",
         done_label="Finish")
     save_setup(accounts={k: "yes" if v else "no" for k, v in signed.items()})
@@ -249,7 +273,7 @@ def menu():
         full_setup()
         return
     options = [
-        ("Accounts", "Trakt and TMDb: sign in or out"),
+        ("Accounts", "Trakt, Real-Debrid and TMDb: sign in or out"),
         ("Speed setting", f"Now: {(profiles.current_profile() or '?').title()}. Lite or Standard"),
         ("Repair TonyFlix settings", "Re-apply players and add-on settings (keeps sign-ins)"),
         ("Clean up now", "Remove old thumbnails, package backups and temp files"),

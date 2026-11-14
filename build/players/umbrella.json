@@ -1,0 +1,21 @@
+{
+    "name": "Umbrella",
+    "plugin": "plugin.video.umbrella",
+    "priority": 10,
+    "is_resolvable": "false",
+    "make_playlist": "true",
+    "assert": {
+        "play_movie": [
+            "tmdb",
+            "title"
+        ],
+        "play_episode": [
+            "tmdb",
+            "showname",
+            "season",
+            "episode"
+        ]
+    },
+    "play_movie": "plugin://plugin.video.umbrella/?action=play&title={title_url}&year={year}&imdb={imdb}&tmdb={tmdb}&premiered={premiered}",
+    "play_episode": "plugin://plugin.video.umbrella/?action=play&title={title_url}&year={showyear}&imdb={imdb}&tmdb={tmdb}&tvdb={tvdb}&season={season}&episode={episode}&tvshowtitle={showname_url}&premiered={premiered}"
+}

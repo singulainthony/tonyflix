@@ -1,0 +1,19 @@
+{
+    "name": "Fen Light+",
+    "plugin": "plugin.video.fenlight",
+    "priority": 20,
+    "is_resolvable": "false",
+    "make_playlist": "false",
+    "assert": {
+        "play_movie": [
+            "tmdb"
+        ],
+        "play_episode": [
+            "tmdb",
+            "season",
+            "episode"
+        ]
+    },
+    "play_movie": "plugin://plugin.video.fenlight/?mode=playback.media&media_type=movie&tmdb_id={tmdb}",
+    "play_episode": "plugin://plugin.video.fenlight/?mode=playback.media&media_type=episode&tmdb_id={tmdb}&season={season}&episode={episode}"
+}

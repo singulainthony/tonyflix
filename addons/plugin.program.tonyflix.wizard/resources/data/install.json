@@ -17,12 +17,26 @@
       "zip_pattern": "repository\\.jurialmunkey-[0-9.]+\\.zip"
     },
     {
+      "id": "repository.umbrella",
+      "name": "Umbrella",
+      "index": "https://umbrellaplug.github.io/",
+      "zip_pattern": "repository\\.umbrella-[0-9.]+\\.zip"
+    },
+    {
       "id": "repository.a4ksubtitles",
       "name": "a4kSubtitles",
       "zip": "https://a4k-openproject.github.io/a4kSubtitles/packages/a4kSubtitles-repository.zip"
     }
   ],
-  "zip_addons": [],
+  "zip_addons": [
+    {
+      "id": "plugin.video.fenlight",
+      "name": "Fen Light+",
+      "version_url": "https://thejason40.github.io/packages/fen_light_version",
+      "zip": "https://thejason40.github.io/packages/plugin.video.fenlight-{version}.zip",
+      "_why": "Fen Light+ has no Kodi repository; its own updater (thejason40 / thejason40.github.io) keeps it current."
+    }
+  ],
   "addons": [
     {
       "id": "plugin.video.themoviedb.helper",
@@ -40,6 +54,14 @@
         "trakt_token"
       ],
       "_preseed_why": "On a fresh box there is nothing to migrate from older TMDbHelper versions. Left to itself the module migrates on first use, and when several Home rows load at once that races and TMDbHelper shows 'Provider module unavailable'. Skipped if an older TMDbHelper Trakt sign-in exists."
+    },
+    {
+      "id": "plugin.video.umbrella",
+      "name": "Umbrella",
+      "preseed": {
+        "umbrella.externalWarning": "true"
+      },
+      "_preseed_why": "Written to Umbrella's settings before it is installed: on first start Umbrella otherwise opens a help window (external providers) that blocks the rest of the setup."
     },
     {
       "id": "service.subtitles.a4ksubtitles",
@@ -79,6 +101,60 @@
       "on_sign_out": "Skin.Reset(TonyFlix.TraktLinked)"
     },
     {
+      "key": "rd_umbrella",
+      "name": "Real-Debrid",
+      "why": "Streams for the Play button",
+      "requires": "plugin.video.umbrella",
+      "sign_in": "RunPlugin(plugin://plugin.video.umbrella/?action=rd_Authorize)",
+      "close_after_sign_in": "addonsettings",
+      "_close_note": "Umbrella's rd_Authorize always opens its settings page after a successful sign-in.",
+      "sign_out_settings": {
+        "addon": "plugin.video.umbrella",
+        "guard_property": "umbrella.updateSettings",
+        "clear": [
+          "realdebrid.clientid",
+          "realdebridsecret",
+          "realdebridtoken",
+          "realdebridrefresh",
+          "realdebridusername"
+        ],
+        "_why": "Same settings Umbrella's own rd_Revoke clears; that action also opens Umbrella's settings and an OK box."
+      },
+      "status": {
+        "setting": [
+          "plugin.video.umbrella",
+          "realdebridtoken"
+        ]
+      },
+      "username": {
+        "setting": [
+          "plugin.video.umbrella",
+          "realdebridusername"
+        ]
+      }
+    },
+    {
+      "key": "rd_fenlight",
+      "name": "Real-Debrid (backup player)",
+      "why": "Streams for \"Play with...\" (Fen Light+)",
+      "requires": "plugin.video.fenlight",
+      "optional": true,
+      "sign_in": "RunPlugin(plugin://plugin.video.fenlight/?mode=real_debrid.authenticate)",
+      "sign_out": "RunPlugin(plugin://plugin.video.fenlight/?mode=real_debrid.revoke_authentication)",
+      "status": {
+        "property": "fenlight.rd.token",
+        "empty": [
+          "empty_setting"
+        ]
+      },
+      "username": {
+        "property": "fenlight.rd.account_id",
+        "empty": [
+          "empty_setting"
+        ]
+      }
+    },
+    {
       "key": "tmdb",
       "name": "TMDb",
       "why": "Optional: your TMDb watchlist, favourites and ratings",
@@ -95,15 +171,8 @@
     }
   ],
   "retired": {
-    "_why": "Removed from TonyFlix on 2026-11-14 (they were finding no sources). On boxes that already have them, the wizard DISABLES them (reversible, keeps their settings and sign-ins) and removes their TMDbHelper player files. To bring one back: Add-ons > My add-ons > enable it, and restore its player file in build/players.",
-    "addons": [
-      "plugin.video.umbrella",
-      "plugin.video.fenlight",
-      "repository.umbrella"
-    ],
-    "players": [
-      "umbrella.json",
-      "fenlight_plus.json"
-    ]
+    "_why": "Add-ons TonyFlix no longer uses: disabled on boxes that have them, player files removed. Empty for now (Umbrella and Fen Light+ were brought back on 2026-11-14).",
+    "addons": [],
+    "players": []
   }
 }
