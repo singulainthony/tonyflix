@@ -94,11 +94,20 @@
       "sign_in": "RunScript(script.module.tmdbhelper.sync.trakt,action=authenticate)",
       "sign_out": "RunScript(script.module.tmdbhelper.sync.trakt,action=revoke)",
       "_sign_out_note": "TMDbHelper asks 'are you sure' itself, so TonyFlix doesn't ask again.",
-      "status": {
-        "property": "TMDbHelper.TraktIsAuth"
-      },
+      "status": [
+        {
+          "setting": [
+            "script.module.tmdbhelper.sync.trakt",
+            "token"
+          ]
+        },
+        {
+          "property": "TMDbHelper.TraktIsAuth"
+        }
+      ],
       "on_sign_in": "Skin.SetBool(TonyFlix.TraktLinked)",
-      "on_sign_out": "Skin.Reset(TonyFlix.TraktLinked)"
+      "on_sign_out": "Skin.Reset(TonyFlix.TraktLinked)",
+      "_status_note": "The module's stored sign-in (setting 'token') is checked first: TMDbHelper.TraktIsAuth is only set after TMDbHelper's first Trakt request of the session."
     },
     {
       "key": "rd_umbrella",
@@ -174,5 +183,13 @@
     "_why": "Add-ons TonyFlix no longer uses: disabled on boxes that have them, player files removed. Empty for now (Umbrella and Fen Light+ were brought back on 2026-11-14).",
     "addons": [],
     "players": []
-  }
+  },
+  "addon_players": [
+    {
+      "addon": "plugin.video.tmdbmovies",
+      "name": "TMDb Movies",
+      "file": "resources/lib/json/tmdbmovies.json",
+      "_why": "TonyFlix doesn't install add-ons that come with their own source scrapers. If you install one yourself, the wizard copies the TMDbHelper player file that add-on ships (the same as its own 'export player' option), so it appears in the Play list."
+    }
+  ]
 }

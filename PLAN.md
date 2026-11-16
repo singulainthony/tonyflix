@@ -509,6 +509,27 @@ Real-Debrid accounts. TMDb stays on the Accounts screen, and there is still no d
   Umbrella and Fen Light+.
 - "No sources found" is unchanged: both still need source providers set up in their own settings.
 
+**2026-11-16: review pass + TMDb Movies hook** (wizard 0.3.6, maintenance 1.0.1)
+- A fresh install from the live GitHub site on the Mac took about 90 s with no problems. 50 of 57 row paths
+  returned titles in about 0.5 s each. The rest are expected to be empty (saved searches, the search-button
+  targets) or need a second look (the Apple TV+ tile under "Movies by Service" returned nothing).
+- **Fixed:**
+  - After an install prompt was answered, a failed download made the wizard wait 5 minutes for that add-on
+    (Kodi only shows a notification). It now gives up after 30 s with no install activity.
+  - A zip with no `addon.xml` crashed setup; it now reports a problem.
+  - After the skin switch, the progress screen reopened showing "Starting..." with an empty bar.
+  - The Accounts screen logged "Control 100 can't focus" (it focused an empty list).
+  - Trakt status came only from `TMDbHelper.TraktIsAuth`, which is empty until TMDbHelper's first Trakt request.
+    Accounts now also checks the Trakt module's stored `token`, and the wizard service syncs the
+    `TonyFlix.TraktLinked` skin flag with it at every start. Trakt rows follow the real sign-in even when it was made
+    in TMDbHelper's own settings.
+  - Maintenance re-ran its low-space cleanup every 10 minutes on a box that stays nearly full. It now runs at most
+    once every 12 hours.
+- **TMDb Movies** (`plugin.video.tmdbmovies`, Angelitto), the add-on that found streams on Diggz, comes with its own
+  source scrapers. TonyFlix still doesn't install scraper add-ons. If the user installs it, the wizard copies the
+  TMDbHelper player file it ships (`resources/lib/json/tmdbmovies.json`, the same as its own "export player"
+  option) at the next Kodi start or on Repair (`install.json` > `addon_players`), so it appears in the Play list.
+
 **Next phase:** Phase 8 (testing on the real T95 box: hosting, install from zip, speed measurements).
 
 **Follow-up idea:** pack `media/` into `Textures.xbt` with Kodi's TexturePacker, which loads faster on Android.

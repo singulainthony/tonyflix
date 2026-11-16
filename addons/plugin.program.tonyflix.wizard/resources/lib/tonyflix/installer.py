@@ -120,8 +120,10 @@ def unpack_addon(zip_path):
 def zip_dependencies(zip_path):
     """Non-Kodi imports declared in a zip's addon.xml (optional ones skipped)."""
     with zipfile.ZipFile(zip_path) as zf:
-        xml = next(n for n in zf.namelist() if n.count("/") == 1 and n.endswith("/addon.xml")
-                   and not n.startswith("__MACOSX"))
+        xml = next((n for n in zf.namelist() if n.count("/") == 1 and n.endswith("/addon.xml")
+                    and not n.startswith("__MACOSX")), None)
+        if xml is None:
+            raise InstallError(f"{os.path.basename(zip_path)}: no addon.xml")
         root = ET.fromstring(zf.read(xml))
     return [i.get("addon") for i in root.iter("import")
             if i.get("optional", "false") != "true" and not i.get("addon", "").startswith(("xbmc.", "kodi."))]
@@ -340,6 +342,8 @@ def install_from_repo(addon_id, timeout=300, monitor=None):
     answers = {"install": 1, "skin": 2}   # prompts we may answer for this install, at most this often
     started = time.time()
     reissued = False
+    answered_at = None
+    last_activity = time.time()
     while time.time() < end:
         dlg = xbmcgui.getCurrentWindowDialogId()
         if answers["install"] and not reissued and dlg >= 13000 and not is_own_window(dlg):
@@ -355,7 +359,15 @@ def install_from_repo(addon_id, timeout=300, monitor=None):
         for kind in ("install", "skin"):
             if answers[kind] and answer_once(kind):
                 answers[kind] -= 1
+                last_activity = time.time()
+                if kind == "install":
+                    answered_at = time.time()
         dlg = xbmcgui.getCurrentWindowDialogId()
+        if dlg in (YESNO_DIALOG, PROGRESS_DIALOG):
+            last_activity = time.time()
+        if answered_at and not is_installed(addon_id) and time.time() - last_activity > 30:
+            # Kodi reports a failed download only with a notification: don't sit out the full timeout.
+            raise InstallError(f"Kodi couldn't download {addon_id} - check the internet connection")
         if dlg == OK_DIALOG:
             # Kodi shows an OK dialog when an install fails (e.g. a dependency can't be met).
             msg = dialog_text()

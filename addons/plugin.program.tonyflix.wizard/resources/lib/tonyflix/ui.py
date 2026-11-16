@@ -68,10 +68,13 @@ def ask_to_start(suggested):
 class _Cover(xbmcgui.WindowXMLDialog):
     def __init__(self, *args, **kwargs):
         self.ready = False
+        self.owner = kwargs.get("owner")
 
     def onInit(self):
         self.setProperty(installer.OWN_WINDOW_PROPERTY, "1")
         self.ready = True
+        if self.owner:          # show the current step as soon as the controls exist (also after a skin reload)
+            self.owner._apply(self)
 
     def onAction(self, action):
         pass      # never closes itself; keys belong to whatever Kodi prompt is open underneath
@@ -92,7 +95,7 @@ class SetupScreen:
         self.thread.start()
 
     def _open(self):
-        w = _Cover("tonyflix-progress.xml", PATH, "Default", "1080i")
+        w = _Cover("tonyflix-progress.xml", PATH, "Default", "1080i", owner=self)
         w.show()
         end = time.time() + 3
         while not w.ready and time.time() < end:
@@ -109,12 +112,13 @@ class SetupScreen:
             del self.win
             self.win = None
 
-    def _apply(self):
+    def _apply(self, win=None):
+        win = win or self.win
         pct, step, detail = self.state
         try:
-            self.win.getControl(20).setLabel(step)
-            self.win.getControl(21).setWidth(max(1, int(800 * min(pct, 100) / 100)))
-            self.win.getControl(22).setLabel(detail)
+            win.getControl(20).setLabel(step)
+            win.getControl(21).setWidth(max(1, int(800 * min(pct, 100) / 100)))
+            win.getControl(22).setLabel(detail)
         except (RuntimeError, AttributeError):
             pass
 

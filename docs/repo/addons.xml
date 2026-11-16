@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.program.tonyflix.wizard" name="TonyFlix Wizard" version="0.3.5" provider-name="TonyFlix">
+<addon id="plugin.program.tonyflix.wizard" name="TonyFlix Wizard" version="0.3.6" provider-name="TonyFlix">
     <requires>
         <import addon="xbmc.python" version="3.0.1" />
     </requires>
@@ -38,7 +38,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="service.tonyflix.maintenance" name="TonyFlix Maintenance" version="1.0.0" provider-name="TonyFlix">
+<addon id="service.tonyflix.maintenance" name="TonyFlix Maintenance" version="1.0.1" provider-name="TonyFlix">
     <requires>
         <import addon="xbmc.python" version="3.0.1" />
     </requires>

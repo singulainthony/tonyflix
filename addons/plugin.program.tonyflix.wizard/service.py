@@ -23,6 +23,17 @@ def wait_until_idle(monitor):
     return False
 
 
+def sync_on_start():
+    """Cheap checks at every Kodi start on a set-up box."""
+    from tonyflix import installer
+    # Trakt rows follow the real sign-in, wherever it was made (Accounts screen or TMDbHelper's own settings).
+    if xbmc.getSkinDir() == setup.SKIN_ID:
+        linked = bool(installer.setting_of("script.module.tmdbhelper.sync.trakt", "token"))
+        xbmc.executebuiltin(f"Skin.{'SetBool' if linked else 'Reset'}(TonyFlix.TraktLinked)")
+    # A player add-on installed since last time (e.g. TMDb Movies): add it to the Play list.
+    config.hook_addon_players()
+
+
 def main():
     monitor = xbmc.Monitor()
     if monitor.waitForAbort(3):       # let Kodi finish starting / the zip install finish
@@ -32,6 +43,7 @@ def main():
         return
     state = setup.load_setup()
     if state.get("done"):
+        sync_on_start()
         # An update changed TonyFlix's add-on settings (e.g. the default player): apply them once, quietly.
         wanted = config.defaults_version()
         if state.get("defaults_version") != wanted and not monitor.waitForAbort(20) and wait_until_idle(monitor):

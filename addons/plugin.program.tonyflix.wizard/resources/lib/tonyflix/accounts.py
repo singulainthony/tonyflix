@@ -33,7 +33,8 @@ def is_available(acc):
 
 
 def is_signed_in(acc):
-    return bool(_read(acc["status"]))
+    sources = acc["status"] if isinstance(acc["status"], list) else [acc["status"]]
+    return any(_read(s) for s in sources)
 
 
 def username(acc):

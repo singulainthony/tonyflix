@@ -3,6 +3,7 @@
 # never competes with browsing or playback. Runs sooner if the box is low on space.
 import os
 import sys
+import time
 
 import xbmc
 import xbmcaddon
@@ -13,6 +14,7 @@ from tfmaint import cleaner, rules  # noqa: E402
 STARTUP_DELAY = 300   # leave the first minutes after boot alone
 CHECK_EVERY = 600     # seconds between "is it time?" checks
 IDLE_SECONDS = 180    # user must be idle this long
+LOW_SPACE_GAP = 12 * 3600
 
 
 def main():
@@ -27,7 +29,11 @@ def main():
         interval = cleaner.setting_int("interval_days", 7)
         state = cleaner.load_state()
         free = cleaner.free_space_mb()
-        due = rules.is_due(state.get("last_run"), interval) or (0 <= free < cleaner.LOW_SPACE_MB)
+        # Low on space: run early, but at most every 12 hours (a box that stays nearly full would otherwise
+        # re-run the cleanup every 10 minutes).
+        low_space = 0 <= free < cleaner.LOW_SPACE_MB
+        due = rules.is_due(state.get("last_run"), interval) or \
+            (low_space and time.time() - state.get("last_attempt", 0) > LOW_SPACE_GAP)
         idle = xbmc.getCondVisibility(f"System.IdleTime({IDLE_SECONDS})") and not xbmc.Player().isPlaying()
         if enabled and due and idle:
             report = cleaner.Cleaner(monitor).run()

@@ -137,6 +137,7 @@ class Cleaner:
         self.report.update(seconds=round(time.time() - start, 1), free_before_mb=free_before,
                            free_after_mb=free_space_mb(), thumb_age_days=thumb_days, low_space=low_space)
         state = load_state()
+        state["last_attempt"] = time.time()
         if not self.report["stopped"]:
             state["last_run"] = time.time()
         state["last_report"] = self.report

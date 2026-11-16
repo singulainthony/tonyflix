@@ -69,6 +69,35 @@ def apply_addon_defaults(report):
     log(f"add-on defaults applied ({len(report)} items)")
 
 
+def hook_addon_players(report=None):
+    """Player add-ons the user installed themselves (install.json 'addon_players') ship their own TMDbHelper
+    player file: copy it into TMDbHelper (as the add-on's own "export player" option does) so it shows up in
+    the Play list. Re-copied only when missing or changed."""
+    from tonyflix.installer import load_install
+    report = report if report is not None else []
+    if not is_installed(TMDBH):
+        return report
+    for entry in load_install().get("addon_players", []):
+        if not is_installed(entry["addon"]):
+            continue
+        src = os.path.join(xbmcvfs.translatePath(f"special://home/addons/{entry['addon']}/"), entry["file"])
+        if not os.path.isfile(src):
+            report.append(f"{entry['name']}: player file not found")
+            continue
+        dst = os.path.join(_tmdbh_data("players"), os.path.basename(src))
+        with open(src, "rb") as f:
+            data = f.read()
+        if os.path.isfile(dst):
+            with open(dst, "rb") as f:
+                if f.read() == data:
+                    continue
+        with open(dst, "wb") as f:
+            f.write(data)
+        report.append(f"player {entry['name']} (from the add-on)")
+        log(f"added {entry['name']} to the Play list")
+    return report
+
+
 def defaults_version():
     with open(os.path.join(DATA, "defaults.json"), encoding="utf-8") as f:
         return json.load(f).get("_version", 1)
@@ -107,6 +136,7 @@ def apply_all():
     report = []
     retire(report)
     install_players(report)
+    hook_addon_players(report)
     apply_addon_defaults(report)
     sync_skin_flags(report)
     return report
